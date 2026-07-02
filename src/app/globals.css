@@ -1,26 +1,109 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.document-preview-content .office-preview {
+  color: #0f172a;
+  line-height: 1.6;
+}
+
+.document-preview-content .office-preview:not(.excel-preview) table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+
+.document-preview-content .office-preview:not(.excel-preview) th,
+.document-preview-content .office-preview:not(.excel-preview) td {
+  border: 1px solid #e2e8f0;
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.document-preview-content .office-preview:not(.excel-preview) th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+.document-preview-content .excel-preview .excel-sheet + .excel-sheet {
+  margin-top: 2rem;
+}
+
+.document-preview-content .excel-preview .excel-sheet h3 {
+  margin-bottom: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.document-preview-content .excel-preview .excel-table-wrap {
+  overflow: auto;
+  max-width: 100%;
+  margin-bottom: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.document-preview-content .excel-preview .excel-table {
+  width: max-content;
+  min-width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.document-preview-content .excel-preview .excel-table td {
+  border: 1px solid #d8e0ea;
+  padding: 0.25rem 0.5rem;
+  vertical-align: middle;
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #fff;
+  color: #0f172a;
+}
+
+.document-preview-content .excel-preview .preview-empty-sheet {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+
+.document-preview-content .dat-preview {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #1e293b;
+}
+
+.document-preview-content .preview-notice {
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  background: #fffbeb;
+  color: #92400e;
+  font-size: 0.875rem;
 }

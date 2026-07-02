@@ -1,0 +1,269 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id             String        @id @default(cuid())
+  username       String        @unique
+  passwordHash   String
+  role           String        @default("sales")
+  displayName    String?
+  createdAt      DateTime      @default(now())
+  ownedCustomers Customer[]    @relation("CustomerOwner")
+  assignedCases  SupportCase[] @relation("CaseAssignee")
+}
+
+/// 客户公司（主线入口）
+model Customer {
+  id            String            @id @default(cuid())
+  accountName   String
+  englishName   String?
+  region        String?
+  industry      String?
+  description   String?
+  ownerName     String?
+  aeName        String?
+  ownerUserId   String?
+  ownerUser     User?             @relation("CustomerOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
+  notes         String?
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  opportunities Opportunity[]
+  contacts      Contact[]
+  addresses     CustomerAddress[]
+  licenses      License[]
+  supportCases  SupportCase[]
+}
+
+model CustomerAddress {
+  id          String   @id @default(cuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  addressType String
+  label       String?
+  addressLine String
+  city        String?
+  province    String?
+  postalCode  String?
+  country     String?
+  notes       String?
+  createdAt   DateTime @default(now())
+}
+
+model AppConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model Contact {
+  id         String   @id @default(cuid())
+  name       String
+  title      String?
+  email      String?
+  phone      String?
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+}
+
+model Vendor {
+  id             String          @id @default(cuid())
+  name           String
+  productLines   String?
+  contactInfo    String?
+  notes          String?
+  createdAt      DateTime        @default(now())
+  vendorBookings VendorBooking[]
+}
+
+/// 销售机会（生命周期主对象）
+model Opportunity {
+  id             String          @id @default(cuid())
+  name           String
+  customerId     String
+  customer       Customer        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  stage          String          @default("Discovery")
+  type           String          @default("New Business")
+  productLine    String?
+  dealSize       Float?
+  currency       String          @default("CNY")
+  closeDate      DateTime?
+  nextStep       String?
+  ownerName      String?
+  aeName         String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  documents      Document[]
+  quotes         Quote[]
+  contracts      Contract[]
+  vendorBookings VendorBooking[]
+  deliveries     Delivery[]
+  acceptances    Acceptance[]
+  financeRecords FinanceRecord[]
+  licenses       License[]
+  activities     SalesActivity[]
+  supportCases   SupportCase[]
+}
+
+model Quote {
+  id            String      @id @default(cuid())
+  name          String
+  opportunityId String
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  version       Int         @default(1)
+  amount        Float?
+  currency      String      @default("CNY")
+  status        String      @default("Draft")
+  isFinal       Boolean     @default(false)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Document {
+  id            String      @id @default(cuid())
+  fileName      String
+  opportunityId String
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  category      String
+  version       Int?
+  fileSize      Int?
+  mimeType      String?
+  storagePath   String
+  notes         String?
+  uploadedAt    DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Contract {
+  id            String      @id @default(cuid())
+  opportunityId String
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  contractNo    String?
+  contractType  String      @default("Contract")
+  amount        Float?
+  currency      String      @default("CNY")
+  signedDate    DateTime?
+  status        String      @default("Draft")
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model VendorBooking {
+  id            String      @id @default(cuid())
+  opportunityId String
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  vendorId      String?
+  vendor        Vendor?     @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  bookingNo     String?
+  amount        Float?
+  currency      String      @default("CNY")
+  orderDate     DateTime?
+  status        String      @default("Pending")
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Delivery {
+  id            String      @id @default(cuid())
+  opportunityId String
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  deliveryNo    String?
+  deliveredAt   DateTime?
+  status        String      @default("Pending")
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Acceptance {
+  id            String      @id @default(cuid())
+  opportunityId String
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  acceptedAt    DateTime?
+  status        String      @default("Pending")
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model FinanceRecord {
+  id            String      @id @default(cuid())
+  opportunityId String
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  recordType    String
+  amount        Float?
+  currency      String      @default("CNY")
+  recordDate    DateTime?
+  dueDate       DateTime?
+  status        String      @default("Pending")
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model License {
+  id            String        @id @default(cuid())
+  customerId    String
+  customer      Customer      @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  opportunityId String?
+  opportunity   Opportunity?  @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  productLine   String?
+  licenseKey    String?
+  seats         Int?
+  startDate     DateTime?
+  endDate       DateTime?
+  status        String        @default("Active")
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  renewalTasks  RenewalTask[]
+}
+
+model RenewalTask {
+  id        String   @id @default(cuid())
+  licenseId String
+  license   License  @relation(fields: [licenseId], references: [id], onDelete: Cascade)
+  dueDate   DateTime
+  status    String   @default("Open")
+  notes     String?
+  createdAt DateTime @default(now())
+}
+
+model SupportCase {
+  id            String       @id @default(cuid())
+  customerId    String
+  customer      Customer     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  opportunityId String?
+  opportunity   Opportunity? @relation(fields: [opportunityId], references: [id], onDelete: SetNull)
+  title         String
+  customerIssue String?
+  solution      String?
+  status        String       @default("Open")
+  priority      String       @default("Normal")
+  openedAt      DateTime     @default(now())
+  closedAt      DateTime?
+  notes         String?
+  assignedUserId String?
+  assignedUser   User?        @relation("CaseAssignee", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  updatedAt     DateTime     @updatedAt
+}
+
+model SalesActivity {
+  id            String      @id @default(cuid())
+  opportunityId String
+  opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  title         String
+  dueDate       DateTime?
+  status        String      @default("Open")
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}

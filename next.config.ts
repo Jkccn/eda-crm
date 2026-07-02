@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: ["officeparser", "xlsx", "better-sqlite3"],
 };
 
 export default nextConfig;

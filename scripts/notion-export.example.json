@@ -1,0 +1,24 @@
+{
+  "customers": [
+    {
+      "accountName": "示例半导体",
+      "englishName": "Example Semi",
+      "region": "CN",
+      "industry": "IC",
+      "ownerName": "张销售",
+      "contacts": [
+        { "name": "李工", "title": "CAD 经理", "email": "li@example.com" }
+      ],
+      "opportunities": [
+        {
+          "name": "202606-示例-Allegro-新购",
+          "stage": "Qualified",
+          "type": "New Business",
+          "productLine": "Allegro",
+          "dealSize": 300000,
+          "closeDate": "2026-08-01"
+        }
+      ]
+    }
+  ]
+}

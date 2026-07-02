@@ -33,9 +33,22 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# uploads (user files)
+/uploads/*
+!/uploads/.gitkeep
+
+# prisma sqlite
+/dev.db
+/prisma/dev.db
+/prisma/dev.db-journal
+/prisma/dev.db.pending-restore
+/.restore-temp/
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma

@@ -1,0 +1,17 @@
+services:
+  eda-crm:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: "file:./prisma/dev.db"
+      SESSION_SECRET: "${SESSION_SECRET:-change-me-in-production}"
+      CRON_SECRET: "${CRON_SECRET:-}"
+    volumes:
+      - eda-data:/app/prisma
+      - eda-uploads:/app/uploads
+    restart: unless-stopped
+
+volumes:
+  eda-data:
+  eda-uploads:
