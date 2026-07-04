@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.gitignore
+uploads
+prisma/dev.db
+prisma/dev.db-journal
+.env
+.env.*
+*.md
+.cursor
+.terminals

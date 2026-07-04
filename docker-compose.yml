@@ -2,16 +2,16 @@ services:
   eda-crm:
     build: .
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3001:3001"
     environment:
-      DATABASE_URL: "file:./prisma/dev.db"
+      DATABASE_URL: "file:./data/dev.db"
       SESSION_SECRET: "${SESSION_SECRET:-change-me-in-production}"
       CRON_SECRET: "${CRON_SECRET:-}"
+      NODE_ENV: production
+      HOSTNAME: "0.0.0.0"
+      PORT: "3001"
     volumes:
-      - eda-data:/app/prisma
-      - eda-uploads:/app/uploads
+      - ./data:/app/data
+      - ./uploads:/app/uploads
     restart: unless-stopped
-
-volumes:
-  eda-data:
-  eda-uploads:
+    command: sh -c "mkdir -p data uploads && npx prisma migrate deploy && npm start"

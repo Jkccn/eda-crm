@@ -13,12 +13,12 @@ COPY . .
 RUN npx prisma generate
 RUN npm run build
 
-RUN mkdir -p uploads prisma
+RUN mkdir -p uploads data
 
-EXPOSE 3000
+EXPOSE 3001
 ENV NODE_ENV=production
-ENV DATABASE_URL="file:./prisma/dev.db"
+ENV DATABASE_URL="file:./data/dev.db"
 ENV HOSTNAME="0.0.0.0"
-ENV PORT=3000
+ENV PORT=3001
 
-CMD ["sh", "-c", "npx prisma migrate deploy && npx tsx prisma/seed.ts 2>/dev/null || true && npm start"]
+CMD ["sh", "-c", "mkdir -p data uploads && npx prisma migrate deploy && npm start"]
