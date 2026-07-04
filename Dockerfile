@@ -1,17 +1,17 @@
-FROM node:20-alpine
-RUN apk add --no-cache python3 make g++ libc6-compat
-# LibreOffice + 中文字体：用于 Office 文件在线预览（转 PDF）
-RUN apk add --no-cache libreoffice font-noto-cjk ttf-dejavu
+FROM docker.m.daocloud.io/library/node:20-alpine
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+  && apk add --no-cache python3 make g++ libc6-compat
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 COPY prisma ./prisma
 COPY prisma.config.ts ./
-RUN npm ci
+RUN npm config set registry https://registry.npmmirror.com \
+  && npm ci
 
 COPY . .
 RUN npx prisma generate
-RUN npm run build
+RUN if [ -f .next/BUILD_ID ]; then echo "Using prebuilt .next from deploy bundle"; else npm run build; fi
 
 RUN mkdir -p uploads data
 

@@ -1,5 +1,4 @@
 node_modules
-.next
 .git
 .gitignore
 uploads
@@ -10,3 +9,5 @@ prisma/dev.db-journal
 *.md
 .cursor
 .terminals
+.next/dev
+.next/cache
