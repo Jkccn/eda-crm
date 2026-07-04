@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
@@ -233,7 +233,7 @@ export function ExecutionPanel({ opportunityId }: { opportunityId: string }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="mb-3 text-sm font-semibold text-slate-800">{title}</h3>
+      <h3 className="mb-3 text-sm font-semibold text-slate-200">{title}</h3>
       {children}
     </div>
   );
@@ -258,7 +258,7 @@ function MiniForm({
 
   return (
     <form
-      className="mb-3 flex flex-wrap items-end gap-2 rounded-lg border border-dashed border-slate-200 p-3"
+      className="mb-3 flex flex-wrap items-end gap-2 rounded-lg border border-dashed border-white/10 p-3"
       onSubmit={async (e) => {
         e.preventDefault();
         setLoading(true);

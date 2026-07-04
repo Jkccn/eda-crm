@@ -81,6 +81,15 @@ async function main() {
     },
   });
 
+  await prisma.user.create({
+    data: {
+      username: "assistant",
+      passwordHash: hashPassword("assistant123"),
+      role: "assistant",
+      displayName: "小助理",
+    },
+  });
+
   void admin;
   void manager;
 
@@ -103,15 +112,16 @@ async function main() {
       aeName: engineer.displayName,
       notes: "战略客户，主攻 Allegro + CAM350",
       description: "国内领先的 IC 设计公司，长期合作客户，重点关注 CAM350 维保续费。",
+      oemOpportunityNo: "OEM-2026-001",
+      oemOpportunityName: "Allegro 新购报备",
+      oemRegisterStartAt: new Date("2026-01-15"),
+      oemRegisterExpiresAt: new Date("2026-07-15"),
       addresses: {
         create: [
           {
             addressType: "official",
             label: "总部",
             addressLine: "上海市浦东新区张江高科技园区",
-            city: "上海",
-            province: "上海",
-            country: "CN",
           },
         ],
       },
@@ -151,6 +161,15 @@ async function main() {
         create: [
           { title: "安排技术评审", dueDate: new Date("2026-03-15"), status: "Open" },
         ],
+      },
+      vendorBookings: {
+        create: {
+          vendorId: cadence.id,
+          bookingNo: "CAD-PO-7701",
+          amount: 120000,
+          status: "Done",
+          orderDate: new Date("2026-03-01"),
+        },
       },
     },
   });

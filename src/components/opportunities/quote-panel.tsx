@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { FileText, Plus, Trash2, Eye, Download, Pencil } from "lucide-react";
@@ -162,7 +162,7 @@ export function QuotePanel({
       {adding && (
         <form
           onSubmit={handleCreate}
-          className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 space-y-3"
+          className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3"
         >
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="sm:col-span-2">
@@ -234,16 +234,16 @@ export function QuotePanel({
       )}
 
       {quotes.length === 0 ? (
-        <div className="rounded-xl border border-slate-100 py-8 text-center text-sm text-slate-400">
+        <div className="rounded-xl border border-white/5 py-8 text-center text-sm text-slate-500">
           暂无报价记录
         </div>
       ) : (
-        <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <ul className="divide-y divide-white/5 overflow-hidden rounded-xl border border-white/10 bg-slate-900/50">
           {quotes.map((q) => {
             const linkedDocs = docsForQuote(q.version);
             const isEditing = editId === q.id;
             return (
-              <li key={q.id} className="px-4 py-3 hover:bg-slate-50/80">
+              <li key={q.id} className="px-4 py-3 hover-row">
                 {isEditing ? (
                   <div className="space-y-3">
                     <div className="grid gap-3 sm:grid-cols-2">
@@ -289,7 +289,7 @@ export function QuotePanel({
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm font-medium text-slate-900">{q.name}</span>
+                      <span className="text-sm font-medium text-slate-100">{q.name}</span>
                       <span className="text-xs text-slate-400">v{q.version}</span>
                       {q.isFinal && (
                         <Badge className="bg-emerald-100 text-emerald-800">最终版</Badge>
@@ -305,13 +305,13 @@ export function QuotePanel({
                         {linkedDocs.map((doc) => (
                           <li key={doc.id} className="flex items-center gap-2">
                             <FileText className="h-3 w-3 text-slate-400" />
-                            <span className="text-xs text-slate-700">{doc.fileName}</span>
+                            <span className="text-xs text-slate-300">{doc.fileName}</span>
                             {isPreviewable(doc.mimeType, doc.fileName) && (
                               <a
                                 href={documentPreviewUrl(doc.id)}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-xs text-indigo-600 hover:underline"
+                                className="text-xs text-cyan-400 hover:underline"
                               >
                                 <Eye className="inline h-3 w-3" /> 预览
                               </a>
@@ -329,7 +329,7 @@ export function QuotePanel({
                     ) : (
                       <a
                         href={`#files-quote`}
-                        className="mt-2 inline-flex items-center gap-1 text-xs text-slate-400 hover:text-indigo-600"
+                        className="link-hover mt-2 inline-flex items-center gap-1 text-xs text-slate-400"
                       >
                         <FileText className="h-3 w-3" />
                         上传报价文件（版本 v{q.version}）
@@ -356,7 +356,7 @@ export function QuotePanel({
                     <Button
                       type="button"
                       variant="ghost"
-                      className="!px-2 text-red-600 hover:bg-red-50"
+                      className="!px-2 text-red-400 hover:bg-rose-500/20 hover:text-red-300"
                       onClick={() => handleDelete(q.id)}
                     >
                       <Trash2 className="h-4 w-4" />

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -8,6 +8,11 @@ import { Select } from "@/components/ui/select";
 import { useConfigOptions } from "@/components/customers/use-config-options";
 import { useUserPicklist } from "@/components/customers/use-user-picklist";
 import { userDisplayName } from "@/lib/user-display";
+import {
+  OemRegistrationFields,
+  emptyOemFormFields,
+  type OemFormFields,
+} from "@/components/customers/oem-registration-fields";
 
 export function CustomerForm({ onCreated }: { onCreated?: () => void }) {
   const router = useRouter();
@@ -26,6 +31,7 @@ export function CustomerForm({ onCreated }: { onCreated?: () => void }) {
     aeUserId: "",
     notes: "",
   });
+  const [oem, setOem] = useState<OemFormFields>(emptyOemFormFields);
 
   useEffect(() => {
     if (!open) return;
@@ -43,18 +49,33 @@ export function CustomerForm({ onCreated }: { onCreated?: () => void }) {
       });
   }, [open]);
 
+  function resetForm() {
+    setForm({
+      accountName: "",
+      englishName: "",
+      region: "",
+      industry: "",
+      description: "",
+      ownerUserId: "",
+      aeUserId: "",
+      notes: "",
+    });
+    setOem(emptyOemFormFields);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
     const res = await fetch("/api/customers", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
+      body: JSON.stringify({ ...form, ...oem }),
     });
     setSaving(false);
     if (res.ok) {
       const customer = await res.json();
       setOpen(false);
+      resetForm();
       onCreated?.();
       router.push(`/customers/${customer.id}`);
     }
@@ -69,9 +90,9 @@ export function CustomerForm({ onCreated }: { onCreated?: () => void }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="rounded-2xl border border-indigo-100 bg-indigo-50/40 p-5 space-y-4"
+      className="form-panel rounded-2xl p-5 space-y-4"
     >
-      <h3 className="text-sm font-semibold text-slate-900">新建客户</h3>
+      <h3 className="text-sm font-semibold text-slate-100">新建客户</h3>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
           <label className="mb-1 block text-xs font-medium text-slate-600">客户名称 *</label>
@@ -98,7 +119,7 @@ export function CustomerForm({ onCreated }: { onCreated?: () => void }) {
         <div className="sm:col-span-2">
           <label className="mb-1 block text-xs font-medium text-slate-600">客户描述</label>
           <textarea
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+            className="input-dark w-full rounded-lg px-3 py-2 text-sm"
             rows={2}
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -131,9 +152,12 @@ export function CustomerForm({ onCreated }: { onCreated?: () => void }) {
           </Select>
         </div>
       </div>
+
+      <OemRegistrationFields form={oem} onChange={setOem} />
+
       <div className="flex gap-2">
         <Button type="submit" disabled={saving}>{saving ? "保存中…" : "保存"}</Button>
-        <Button type="button" variant="secondary" onClick={() => setOpen(false)}>取消</Button>
+        <Button type="button" variant="secondary" onClick={() => { setOpen(false); resetForm(); }}>取消</Button>
       </div>
     </form>
   );

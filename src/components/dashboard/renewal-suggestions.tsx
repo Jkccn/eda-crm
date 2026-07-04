@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -48,11 +48,11 @@ export function RenewalSuggestions() {
   }
 
   return (
-    <ul className="divide-y divide-slate-100">
+    <ul className="divide-y divide-white/5">
       {pending.map((item) => (
-        <li key={item.license.id} className="flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
+        <li key={item.license.id} className="hover-row flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="text-sm">
-            <p className="font-medium text-slate-900">
+            <p className="font-medium text-slate-100">
               {item.license.customer.accountName} · {item.license.productLine || "License"}
             </p>
             <p className="text-slate-500">

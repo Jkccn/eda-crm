@@ -31,6 +31,11 @@ model Customer {
   ownerUserId   String?
   ownerUser     User?             @relation("CustomerOwner", fields: [ownerUserId], references: [id], onDelete: SetNull)
   notes         String?
+  /// 原厂客户报备
+  oemOpportunityNo     String?
+  oemOpportunityName   String?
+  oemRegisterStartAt   DateTime?
+  oemRegisterExpiresAt DateTime?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   opportunities Opportunity[]
@@ -47,10 +52,6 @@ model CustomerAddress {
   addressType String
   label       String?
   addressLine String
-  city        String?
-  province    String?
-  postalCode  String?
-  country     String?
   notes       String?
   createdAt   DateTime @default(now())
 }
@@ -73,13 +74,41 @@ model Contact {
 }
 
 model Vendor {
-  id             String          @id @default(cuid())
+  id             String            @id @default(cuid())
   name           String
   productLines   String?
   contactInfo    String?
   notes          String?
-  createdAt      DateTime        @default(now())
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @default(now()) @updatedAt
   vendorBookings VendorBooking[]
+  contacts       VendorContact[]
+  relations      VendorRelation[]
+}
+
+model VendorContact {
+  id        String  @id @default(cuid())
+  vendorId  String
+  vendor    Vendor  @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  name      String
+  title     String?
+  email     String?
+  phone     String?
+  isPrimary Boolean @default(false)
+}
+
+/// 供应商关系维护（节日、礼品等）
+model VendorRelation {
+  id              String   @id @default(cuid())
+  vendorId        String
+  vendor          Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  occasionType    String
+  eventDate       DateTime
+  giftDescription String?
+  amount          Float?
+  currency        String   @default("CNY")
+  notes           String?
+  createdAt       DateTime @default(now())
 }
 
 /// 销售机会（生命周期主对象）
@@ -199,6 +228,7 @@ model FinanceRecord {
   opportunityId String
   opportunity   Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
   recordType    String
+  recordNo      String?
   amount        Float?
   currency      String      @default("CNY")
   recordDate    DateTime?

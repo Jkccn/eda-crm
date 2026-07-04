@@ -5,7 +5,7 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
-        "rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-200/50",
+        "glass-card rounded-2xl transition-all duration-200",
         className,
       )}
       {...props}
@@ -14,7 +14,12 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
 }
 
 export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("border-b border-slate-100 px-6 py-4", className)} {...props} />;
+  return (
+    <div
+      className={cn("border-b border-white/5 px-6 py-4", className)}
+      {...props}
+    />
+  );
 }
 
 export function CardBody({ className, ...props }: HTMLAttributes<HTMLDivElement>) {

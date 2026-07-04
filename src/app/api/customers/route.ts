@@ -3,11 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { requireApiAuth, apiForbidden } from "@/lib/api-auth";
 import {
   canAccessCustomer,
+  canDeleteCustomer,
+  canViewCustomerContacts,
   customerPicklistWhere,
   customerScopeWhere,
   isEngineer,
 } from "@/lib/rbac";
 import { resolveCustomerOwners } from "@/lib/customer-owners";
+import { oemFieldsFromBody, stripUndefined } from "@/lib/customer-oem-fields";
 
 export async function GET(request: Request) {
   const { user, error } = await requireApiAuth();
@@ -68,6 +71,7 @@ export async function POST(request: Request) {
       aeName,
       ownerUserId,
       notes: body.notes || null,
+      ...stripUndefined(oemFieldsFromBody(body)),
     },
   });
   return NextResponse.json(customer, { status: 201 });

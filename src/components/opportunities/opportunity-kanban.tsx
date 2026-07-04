@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -88,15 +88,15 @@ export function OpportunityKanban({
               <span className="text-xs text-slate-400">{byStage[stage].length}</span>
             </div>
           </div>
-          <div className="flex min-h-[420px] flex-col gap-2 rounded-xl bg-slate-100/80 p-2">
+          <div className="kanban-column flex min-h-[420px] flex-col gap-2 rounded-xl p-2">
             {byStage[stage].map((opp) => (
               <Card
                 key={opp.id}
                 draggable
                 onDragStart={() => handleDragStart(opp.id)}
                 onDragEnd={handleDragEnd}
-                className={`cursor-grab transition active:cursor-grabbing ${
-                  draggingId === opp.id ? "opacity-50" : "hover:border-indigo-200"
+                className={`group cursor-grab transition-all duration-200 active:cursor-grabbing ${
+                  draggingId === opp.id ? "opacity-50" : "hover-lift hover:border-cyan-400/50"
                 }`}
               >
                 <CardBody className="!py-3 !px-4">
@@ -104,14 +104,14 @@ export function OpportunityKanban({
                     href={`/opportunities/${opp.id}`}
                     className="block"
                   >
-                    <p className="text-sm font-semibold text-slate-900 hover:text-indigo-700">
+                    <p className="text-sm font-semibold text-slate-100 transition-colors group-hover:text-cyan-300">
                       {opp.name}
                     </p>
                   </Link>
                   <p className="mt-1 text-xs text-slate-500">
                     <Link
                       href={`/customers/${opp.customer.id}`}
-                      className="hover:text-indigo-600"
+                      className="link-hover hover:text-cyan-300"
                     >
                       {opp.customer.accountName}
                     </Link>
@@ -119,7 +119,7 @@ export function OpportunityKanban({
                     {opp.type}
                   </p>
                   <div className="mt-2 flex items-center justify-between text-xs">
-                    <span className="font-medium text-slate-700">
+                    <span className="font-medium text-slate-300">
                       {formatCurrency(opp.dealSize, opp.currency)}
                     </span>
                     <span className="text-slate-400">{opp._count.documents} 文件</span>
@@ -133,7 +133,7 @@ export function OpportunityKanban({
               </Card>
             ))}
             {byStage[stage].length === 0 && (
-              <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed border-slate-200 py-8 text-xs text-slate-400">
+              <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed border-white/10 py-8 text-xs text-slate-400">
                 拖入商机
               </div>
             )}

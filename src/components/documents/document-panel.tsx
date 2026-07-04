@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useState } from "react";
 import { Download, Trash2, Upload } from "lucide-react";
@@ -69,11 +69,11 @@ export function DocumentPanel({
   return (
     <div className="space-y-4">
       {suggestedCategory && suggestReason && (
-        <div className="rounded-lg bg-indigo-50 px-3 py-2 text-sm text-indigo-900">
+        <div className="rounded-lg border border-cyan-500/20 bg-cyan-950/30 px-3 py-2 text-sm text-cyan-200">
           建议上传「{DOCUMENT_CATEGORIES.find((c) => c.key === suggestedCategory)?.label}」— {suggestReason}
         </div>
       )}
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-4">
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-dashed border-white/10 bg-white/5 p-4">
         <div className="min-w-[140px]">
           <label className="mb-1 block text-xs font-medium text-slate-600">上传分类</label>
           <Select
@@ -114,21 +114,21 @@ export function DocumentPanel({
       </div>
 
       {filtered.length === 0 ? (
-        <div className="rounded-xl border border-slate-100 bg-white py-12 text-center text-sm text-slate-400">
+        <div className="rounded-xl border border-white/10 bg-slate-900/50 py-12 text-center text-sm text-slate-500">
           暂无文件，请上传或切换分类
         </div>
       ) : (
-        <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <ul className="divide-y divide-white/5 overflow-hidden rounded-xl border border-white/10 bg-slate-900/50">
           {filtered.map((doc) => {
             const catLabel =
               DOCUMENT_CATEGORIES.find((c) => c.key === doc.category)?.label || doc.category;
             return (
               <li
                 key={doc.id}
-                className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-slate-50/80"
+                className="flex items-center justify-between gap-4 px-4 py-3 hover-row"
               >
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-slate-900">{doc.fileName}</p>
+                  <p className="truncate text-sm font-medium text-slate-100">{doc.fileName}</p>
                   <p className="mt-0.5 text-xs text-slate-500">
                     {catLabel}
                     {doc.version ? ` · v${doc.version}` : ""}
@@ -147,7 +147,7 @@ export function DocumentPanel({
                   <Button
                     type="button"
                     variant="ghost"
-                    className="!px-2 text-red-600 hover:bg-red-50"
+                    className="!px-2 text-red-400 hover:bg-rose-500/20 hover:text-red-300"
                     onClick={() => handleDelete(doc.id)}
                   >
                     <Trash2 className="h-4 w-4" />

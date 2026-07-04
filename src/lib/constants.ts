@@ -23,7 +23,7 @@ export const PRODUCT_LINES = [
 ] as const;
 export const CURRENCIES = ["CNY", "USD", "EUR", "SGD"] as const;
 
-export const USER_ROLES = ["admin", "manager", "sales", "engineer"] as const;
+export const USER_ROLES = ["admin", "manager", "sales", "engineer", "assistant"] as const;
 export type UserRole = (typeof USER_ROLES)[number];
 
 export const ROLE_LABELS: Record<UserRole, string> = {
@@ -31,7 +31,18 @@ export const ROLE_LABELS: Record<UserRole, string> = {
   manager: "管理者",
   sales: "销售",
   engineer: "工程师",
+  assistant: "助理",
 };
+
+export const VENDOR_OCCASIONS = [
+  "春节",
+  "中秋",
+  "圣诞",
+  "元旦",
+  "生日",
+  "商务拜访",
+  "其他",
+] as const;
 
 /** 可作为客户销售负责人的角色 */
 export const SALES_OWNER_ROLES = ["admin", "manager", "sales"] as const;
@@ -44,7 +55,12 @@ export const APP_MODULES = [
   "vendors",
   "support",
   "users",
+  "settings",
+  "reports",
 ] as const;
+
+/** 商机报备即将过期天数阈值 */
+export const OEM_EXPIRY_WARNING_DAYS = 30;
 export type AppModule = (typeof APP_MODULES)[number];
 
 export const OPPORTUNITY_STAGES = [
@@ -76,6 +92,20 @@ export const CONTRACT_TYPES = ["Contract", "PO"] as const;
 export const CONTRACT_STATUSES = ["Draft", "Signed", "Active", "Closed"] as const;
 export const EXECUTION_STATUSES = ["Pending", "In Progress", "Done", "Cancelled"] as const;
 export const FINANCE_TYPES = ["Invoice", "Payment"] as const;
+export const VENDOR_FINANCE_TYPES = ["VendorInvoice", "VendorPayment"] as const;
+export const ALL_FINANCE_RECORD_TYPES = [
+  ...FINANCE_TYPES,
+  ...VENDOR_FINANCE_TYPES,
+] as const;
+export type FinanceRecordType = (typeof ALL_FINANCE_RECORD_TYPES)[number];
+
+export const FINANCE_TYPE_LABELS: Record<FinanceRecordType, string> = {
+  Invoice: "客户发票",
+  Payment: "客户回款",
+  VendorInvoice: "原厂发票",
+  VendorPayment: "向原厂付款",
+};
+
 export const FINANCE_STATUSES = ["Pending", "Paid", "Overdue", "Cancelled"] as const;
 export const LICENSE_STATUSES = ["Active", "Expiring", "Expired", "Cancelled"] as const;
 export const RENEWAL_TASK_STATUSES = ["Open", "Done", "Dismissed"] as const;
@@ -89,6 +119,9 @@ export const DOCUMENT_CATEGORIES = [
   { key: "contract", label: "合同", icon: "FileSignature" },
   { key: "po", label: "采购单", icon: "ShoppingCart" },
   { key: "vendor_booking", label: "原厂下单", icon: "Factory" },
+  { key: "vendor_goods", label: "原厂内部货物", icon: "Package" },
+  { key: "vendor_invoice", label: "原厂发票", icon: "Receipt" },
+  { key: "vendor_payment", label: "原厂付款凭证", icon: "Banknote" },
   { key: "delivery", label: "发货/交付", icon: "Truck" },
   { key: "invoice", label: "发票", icon: "Receipt" },
   { key: "license", label: "License", icon: "Key" },
@@ -99,12 +132,12 @@ export const DOCUMENT_CATEGORIES = [
 export type DocumentCategoryKey = (typeof DOCUMENT_CATEGORIES)[number]["key"];
 
 export const STAGE_COLORS: Record<string, string> = {
-  Discovery: "bg-slate-100 text-slate-700",
-  Qualified: "bg-blue-100 text-blue-700",
-  Proposal: "bg-amber-100 text-amber-800",
-  Negotiation: "bg-orange-100 text-orange-800",
-  Won: "bg-emerald-100 text-emerald-800",
-  Lost: "bg-red-100 text-red-700",
+  Discovery: "bg-slate-500/20 text-slate-300 ring-1 ring-slate-400/30",
+  Qualified: "bg-cyan-500/20 text-cyan-300 ring-1 ring-cyan-400/30",
+  Proposal: "bg-violet-500/20 text-violet-300 ring-1 ring-violet-400/30",
+  Negotiation: "bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/30",
+  Won: "bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30",
+  Lost: "bg-rose-500/20 text-rose-300 ring-1 ring-rose-400/30",
 };
 
 /** 商机阶段默认建议上传的文件分类 */

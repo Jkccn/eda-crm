@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -86,7 +86,7 @@ export function OpportunityInlineEdit({ opportunityId, initial }: Props) {
           )}
         </div>
         <div className="flex items-center gap-3">
-          <p className="text-2xl font-bold text-slate-900">
+          <p className="text-2xl font-bold text-slate-100">
             {formatCurrency(display.dealSize, display.currency)}
           </p>
           <Button variant="ghost" className="!px-2" onClick={() => setEditing(true)}>
@@ -98,7 +98,7 @@ export function OpportunityInlineEdit({ opportunityId, initial }: Props) {
   }
 
   return (
-    <div className="space-y-4 rounded-xl border border-indigo-100 bg-indigo-50/40 p-4">
+    <div className="form-panel space-y-4 rounded-xl p-4">
       <p className="text-xs font-medium text-slate-600">快速编辑</p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div>

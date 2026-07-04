@@ -1,8 +1,9 @@
-"use client";
+﻿"use client";
 
 import { useCallback, useState } from "react";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { DOCUMENT_CATEGORIES, type DocumentCategoryKey } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 import {
   CategoryFileUpload,
   StageFileList,
@@ -54,11 +55,14 @@ export function OpportunityStageFiles({
           <Card
             key={cat.key}
             id={`files-${cat.key}`}
-            className={highlighted ? "border-indigo-200 ring-1 ring-indigo-100" : ""}
+            className={cn(
+              "scroll-mt-6",
+              highlighted ? "border-cyan-500/30 ring-1 ring-cyan-400/20" : "",
+            )}
           >
             <CardHeader className="!py-3">
               <div className="flex items-center justify-between gap-2">
-                <h3 className="text-sm font-semibold text-slate-800">{cat.label}</h3>
+                <h3 className="text-sm font-semibold text-slate-200">{cat.label}</h3>
                 <span className="text-xs text-slate-400">{files.length} 个文件</span>
               </div>
             </CardHeader>

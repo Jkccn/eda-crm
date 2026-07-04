@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Pencil } from "lucide-react";
@@ -75,11 +75,11 @@ export function ContactsPanel({ customerId }: { customerId: string }) {
       {contacts.length === 0 ? (
         <p className="text-sm text-slate-400">暂无联系人</p>
       ) : (
-        <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200">
+        <ul className="divide-y divide-white/5 rounded-lg border border-white/10">
           {contacts.map((c) => (
-            <li key={c.id} className="flex items-center justify-between px-4 py-3 text-sm">
+            <li key={c.id} className="hover-row flex items-center justify-between px-4 py-3 text-sm">
               <div>
-                <p className="font-medium text-slate-900">{c.name}</p>
+                <p className="font-medium text-slate-100">{c.name}</p>
                 <p className="text-slate-500">
                   {c.title} · {c.email || c.phone || "—"}
                 </p>
@@ -102,7 +102,7 @@ export function ContactsPanel({ customerId }: { customerId: string }) {
                 </Button>
                 <Button
                   variant="ghost"
-                  className="!px-2 text-red-600"
+                  className="!px-2 text-red-400 hover:bg-rose-500/25 hover:text-red-300"
                   onClick={async () => {
                     if (!confirm("确定删除？")) return;
                     await fetch(`/api/contacts/${c.id}`, { method: "DELETE" });

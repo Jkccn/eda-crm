@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -99,16 +99,16 @@ export default function AdminDataPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">数据备份与恢复</h1>
+          <h1 className="page-title">数据备份与恢复</h1>
           <p className="mt-1 text-sm text-slate-500">ZIP 完整备份含数据库与上传文件；JSON 仅导出业务数据</p>
         </div>
-        <Link href="/admin/users" className="text-sm text-indigo-600 hover:underline">
+        <Link href="/admin/users" className="link-hover text-sm text-cyan-400">
           ← 用户管理
         </Link>
       </div>
 
       {message && (
-        <div className="rounded-xl border border-indigo-100 bg-indigo-50 px-4 py-3 text-sm text-indigo-900">
+        <div className="rounded-xl border border-cyan-500/20 bg-cyan-950/30 px-4 py-3 text-sm text-cyan-200">
           {message}
         </div>
       )}
@@ -116,7 +116,7 @@ export default function AdminDataPage() {
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-200">
               <Download className="h-4 w-4" />
               导出备份
             </h2>
@@ -143,7 +143,7 @@ export default function AdminDataPage() {
 
         <Card>
           <CardHeader>
-            <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-200">
               <Upload className="h-4 w-4" />
               导入恢复
             </h2>
@@ -175,7 +175,7 @@ export default function AdminDataPage() {
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-2">
           <div>
-            <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-slate-200">
               <RefreshCw className="h-4 w-4" />
               文件索引修复
             </h2>
@@ -201,11 +201,11 @@ export default function AdminDataPage() {
                 <FileWarning className="h-4 w-4" />
                 以下文件所属商机已不存在，请手动关联到当前商机：
               </p>
-              <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200">
+              <ul className="divide-y divide-white/5 rounded-lg border border-white/10">
                 {scan.orphanedFiles.map((file) => (
-                  <li key={file.storagePath} className="flex flex-col gap-2 p-3 sm:flex-row sm:items-center">
+                  <li key={file.storagePath} className="hover-row flex flex-col gap-2 p-3 sm:flex-row sm:items-center">
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-slate-900">{file.fileName}</p>
+                      <p className="font-medium text-slate-100">{file.fileName}</p>
                       <p className="text-xs text-slate-500">
                         原商机 ID {file.opportunityId} · {formatFileSize(file.fileSize)}
                       </p>

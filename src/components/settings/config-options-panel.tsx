@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,7 @@ async function fetchConfigValues(url: string, fallback: readonly string[]) {
   }
 }
 
-export function ConfigOptionsPanel() {
+export function ConfigOptionsPanel({ standalone = false }: { standalone?: boolean }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [regions, setRegions] = useState<string[]>([...DEFAULT_REGIONS]);
   const [industries, setIndustries] = useState<string[]>([...DEFAULT_INDUSTRIES]);
@@ -40,7 +40,10 @@ export function ConfigOptionsPanel() {
     });
   }, []);
 
-  if (!isAdmin) return null;
+  if (!standalone && !isAdmin) return null;
+  if (standalone && !isAdmin) {
+    return <p className="text-sm text-slate-400">仅管理员可编辑配置</p>;
+  }
 
   async function save(key: "regions" | "industries", values: string[]) {
     setSaving(true);
@@ -55,7 +58,7 @@ export function ConfigOptionsPanel() {
   return (
     <Card>
       <CardHeader>
-        <h2 className="text-sm font-semibold text-slate-800">区域与行业配置</h2>
+        <h2 className="text-sm font-semibold text-slate-200">区域与行业配置</h2>
         <p className="text-xs text-slate-500">管理员可维护客户表单中的区域、行业选项</p>
       </CardHeader>
       <CardBody className="grid gap-6 lg:grid-cols-2">
@@ -121,12 +124,12 @@ function ConfigList({
 }) {
   return (
     <div>
-      <p className="mb-2 text-sm font-medium text-slate-700">{label}</p>
+      <p className="mb-2 text-sm font-medium text-slate-300">{label}</p>
       <ul className="mb-3 space-y-1">
         {items.map((item, idx) => (
-          <li key={item} className="flex items-center justify-between rounded-lg bg-slate-50 px-3 py-1.5 text-sm">
+          <li key={item} className="hover-row flex items-center justify-between rounded-lg bg-white/5 px-3 py-1.5 text-sm text-slate-200">
             {item}
-            <button type="button" className="text-xs text-red-600" onClick={() => onRemove(idx)}>删除</button>
+            <button type="button" className="text-xs text-red-400 hover:text-red-300" onClick={() => onRemove(idx)}>删除</button>
           </li>
         ))}
       </ul>

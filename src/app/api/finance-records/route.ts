@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { FINANCE_STATUSES, FINANCE_TYPES } from "@/lib/constants";
+import { FINANCE_STATUSES } from "@/lib/constants";
+import { isFinanceRecordType } from "@/lib/finance-records";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -42,7 +43,8 @@ export async function POST(request: Request) {
   const item = await prisma.financeRecord.create({
     data: {
       opportunityId: body.opportunityId,
-      recordType: FINANCE_TYPES.includes(body.recordType) ? body.recordType : "Invoice",
+      recordType: isFinanceRecordType(body.recordType) ? body.recordType : "Invoice",
+      recordNo: body.recordNo?.trim() || null,
       amount: body.amount != null ? Number(body.amount) : null,
       currency: body.currency || "CNY",
       recordDate: body.recordDate ? new Date(body.recordDate) : null,

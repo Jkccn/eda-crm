@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef, useState } from "react";
 import { Download, Eye, Trash2, Upload } from "lucide-react";
@@ -47,7 +47,7 @@ export function DocumentFileActions({
       <Button
         type="button"
         variant="ghost"
-        className="!px-2 text-red-600 hover:bg-red-50"
+        className="!px-2 text-red-400 hover:bg-rose-500/20 hover:text-red-300"
         onClick={onDelete}
       >
         <Trash2 className="h-4 w-4" />
@@ -136,14 +136,14 @@ export function StageFileList({
   }
 
   return (
-    <ul className="divide-y divide-slate-100 overflow-hidden rounded-lg border border-slate-200 bg-white">
+    <ul className="divide-y divide-white/5 overflow-hidden rounded-lg border border-white/10 bg-slate-900/50">
       {files.map((doc) => (
         <li
           key={doc.id}
-          className="flex items-center justify-between gap-4 px-3 py-2.5 hover:bg-slate-50/80"
+          className="flex items-center justify-between gap-4 px-3 py-2.5 hover-row"
         >
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-slate-900">{doc.fileName}</p>
+            <p className="truncate text-sm font-medium text-slate-100">{doc.fileName}</p>
             <p className="mt-0.5 text-xs text-slate-500">
               {doc.version ? `v${doc.version} · ` : ""}
               {formatFileSize(doc.fileSize)} · {formatDate(doc.uploadedAt)}

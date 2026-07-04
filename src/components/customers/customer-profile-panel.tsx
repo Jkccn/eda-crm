@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -88,7 +88,7 @@ export function CustomerProfilePanel({ initial }: { initial: CustomerData }) {
     return (
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0 flex-1">
-          <h1 className="text-2xl font-bold text-slate-900">{data.accountName}</h1>
+          <h1 className="text-2xl font-bold text-slate-100">{data.accountName}</h1>
           {data.englishName && (
             <p className="text-sm text-slate-500">{data.englishName}</p>
           )}
@@ -99,7 +99,7 @@ export function CustomerProfilePanel({ initial }: { initial: CustomerData }) {
             {data.aeName && <span>技术 {data.aeName}</span>}
           </div>
           {data.description && (
-            <p className="mt-3 max-w-2xl text-sm text-slate-700 whitespace-pre-wrap">{data.description}</p>
+            <p className="mt-3 max-w-2xl text-sm text-slate-300 whitespace-pre-wrap">{data.description}</p>
           )}
           {data.notes && (
             <p className="mt-2 max-w-2xl text-sm text-slate-500">{data.notes}</p>
@@ -113,7 +113,7 @@ export function CustomerProfilePanel({ initial }: { initial: CustomerData }) {
   }
 
   return (
-    <div className="space-y-4 rounded-xl border border-indigo-100 bg-indigo-50/40 p-4">
+    <div className="form-panel space-y-4 rounded-xl p-4">
       <p className="text-xs font-medium text-slate-600">编辑客户信息</p>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
@@ -175,7 +175,7 @@ export function CustomerProfilePanel({ initial }: { initial: CustomerData }) {
         <div className="sm:col-span-2">
           <label className="mb-1 block text-xs text-slate-500">客户描述</label>
           <textarea
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+            className="input-dark w-full rounded-lg px-3 py-2 text-sm"
             rows={3}
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
@@ -184,7 +184,7 @@ export function CustomerProfilePanel({ initial }: { initial: CustomerData }) {
         <div className="sm:col-span-2">
           <label className="mb-1 block text-xs text-slate-500">备注</label>
           <textarea
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm"
+            className="input-dark w-full rounded-lg px-3 py-2 text-sm"
             rows={2}
             value={form.notes}
             onChange={(e) => setForm({ ...form, notes: e.target.value })}

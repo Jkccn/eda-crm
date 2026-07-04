@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { Pencil, Trash2, Check, X } from "lucide-react";
@@ -33,9 +33,9 @@ export function EditableRecordList({
   }
 
   return (
-    <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200">
+    <ul className="divide-y divide-white/5 rounded-lg border border-white/10">
       {items.map((item) => (
-        <li key={item.id} className="px-3 py-2 text-sm">
+        <li key={item.id} className="hover-row px-3 py-2 text-sm">
           {editingId === item.id ? (
             renderEditForm(item, {
               onSave: () => setEditingId(null),
@@ -43,7 +43,7 @@ export function EditableRecordList({
             })
           ) : (
             <div className="flex items-start justify-between gap-2">
-              <div className="min-w-0 flex-1 text-slate-700">
+              <div className="min-w-0 flex-1 text-slate-300">
                 {renderSummary(item)}
                 <UpdatedAtText at={item.updatedAt as string | undefined} />
               </div>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { ChevronRight, Users } from "lucide-react";
 import { CustomerForm } from "@/components/customers/customer-form";
 import { Badge } from "@/components/ui/badge";
@@ -34,8 +34,8 @@ export default async function CustomersPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">客户</h1>
-          <p className="mt-1 text-sm text-slate-500">
+          <h1 className="page-title">客户</h1>
+          <p className="page-subtitle">
             以客户为主线，进入客户查看销售机会与阶段文件
           </p>
         </div>
@@ -53,10 +53,10 @@ export default async function CustomersPage() {
         <div className="grid gap-4">
           {customers.map((customer) => (
             <Link key={customer.id} href={`/customers/${customer.id}`}>
-              <Card className="transition hover:border-indigo-200 hover:shadow-sm">
+              <Card className="hover-lift transition-all duration-200">
                 <CardBody className="flex items-center justify-between gap-4">
                   <div className="min-w-0">
-                    <h2 className="truncate font-semibold text-slate-900">
+                    <h2 className="truncate font-semibold text-slate-100">
                       {customer.accountName}
                     </h2>
                     <p className="mt-1 text-sm text-slate-500">

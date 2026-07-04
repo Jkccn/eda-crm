@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -63,8 +63,8 @@ export function OpportunityForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-2xl border border-slate-200 bg-slate-50/80 p-5 space-y-4">
-      <h3 className="text-sm font-semibold text-slate-900">新建销售机会</h3>
+    <form onSubmit={handleSubmit} className="form-panel rounded-2xl p-5 space-y-4">
+      <h3 className="text-sm font-semibold text-slate-100">新建销售机会</h3>
       <p className="text-xs text-slate-500">命名建议：YYYYMM-客户简称-产品-类型</p>
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="sm:col-span-2">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { DocumentPanel, type DocumentItem } from "@/components/documents/document-panel";
@@ -67,8 +67,8 @@ function FilterTab({
       onClick={onClick}
       className={
         active
-          ? "rounded-lg bg-indigo-600 px-3 py-1.5 text-sm font-medium text-white"
-          : "rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100"
+          ? "rounded-lg bg-gradient-to-r from-cyan-600 to-indigo-600 px-3 py-1.5 text-sm font-medium text-white"
+          : "rounded-lg px-3 py-1.5 text-sm font-medium text-slate-400 hover:bg-cyan-500/22 hover:text-cyan-100 hover:shadow-[inset_0_0_0_1px_rgba(34,211,238,0.3)]"
       }
     >
       {label}

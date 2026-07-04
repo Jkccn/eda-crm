@@ -10,7 +10,7 @@ export type SessionUser = {
   displayName: string | null;
 };
 
-/** 兼容旧版角色值，统一映射到当前四角色体系 */
+/** 兼容旧版角色值，统一映射到当前角色体系 */
 export function normalizeRole(role: string): UserRole | null {
   const r = role.trim().toLowerCase();
   if (r === "user" || r === "readonly") return "sales";

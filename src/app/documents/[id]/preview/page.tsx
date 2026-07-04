@@ -39,10 +39,10 @@ export default async function DocumentPreviewPage({ params }: Params) {
 
   return (
     <div className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col gap-4 p-4 sm:p-6">
-      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-slate-900/50 px-4 py-3">
         <div className="min-w-0">
           <p className="text-xs text-slate-500">文件预览</p>
-          <h1 className="truncate text-lg font-semibold text-slate-900">{document.fileName}</h1>
+          <h1 className="truncate text-lg font-semibold text-slate-100">{document.fileName}</h1>
         </div>
         <div className="flex shrink-0 gap-2">
           <Link href={documentDownloadUrl(document.id)}>
@@ -54,7 +54,7 @@ export default async function DocumentPreviewPage({ params }: Params) {
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="flex-1 overflow-hidden rounded-xl border border-white/10 bg-slate-900/50">
         {mode === "native" && (
           <NativePreview
             id={document.id}
@@ -97,7 +97,7 @@ function NativePreview({
 
   if (mime.startsWith("image/") || ["png", "jpg", "jpeg", "gif", "webp", "svg"].includes(ext || "")) {
     return (
-      <div className="flex h-[calc(100vh-12rem)] items-center justify-center overflow-auto bg-slate-50 p-4">
+      <div className="flex h-[calc(100vh-12rem)] items-center justify-center overflow-auto bg-slate-950 p-4">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={url} alt={fileName} className="max-h-full max-w-full object-contain" />
       </div>
@@ -126,7 +126,7 @@ function NativePreview({
 function OfficePreview({ html }: { html: string }) {
   return (
     <div
-      className="document-preview-content h-[calc(100vh-12rem)] overflow-auto p-6"
+      className="document-preview-content h-[calc(100vh-12rem)] overflow-auto bg-white p-6 text-slate-900"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

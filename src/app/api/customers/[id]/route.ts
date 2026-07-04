@@ -1,8 +1,15 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiAuth, apiForbidden } from "@/lib/api-auth";
-import { canAccessCustomer, isEngineer } from "@/lib/rbac";
+import {
+  canAccessCustomer,
+  canDeleteCustomer,
+  canViewCustomerContacts,
+  isAssistant,
+  isEngineer,
+} from "@/lib/rbac";
 import { resolveCustomerOwners } from "@/lib/customer-owners";
+import { oemFieldsFromBody, stripUndefined } from "@/lib/customer-oem-fields";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -14,13 +21,15 @@ export async function GET(_request: Request, { params }: Params) {
   const customer = await prisma.customer.findUnique({
     where: { id },
     include: {
-      contacts: true,
-      opportunities: {
-        orderBy: { updatedAt: "desc" },
-        include: {
-          _count: { select: { documents: true, quotes: true } },
-        },
-      },
+      contacts: canViewCustomerContacts(user!),
+      opportunities: canViewCustomerContacts(user!)
+        ? {
+            orderBy: { updatedAt: "desc" },
+            include: {
+              _count: { select: { documents: true, quotes: true } },
+            },
+          }
+        : false,
     },
   });
   if (!customer) {
@@ -29,7 +38,10 @@ export async function GET(_request: Request, { params }: Params) {
   if (!canAccessCustomer(user!, customer)) {
     return apiForbidden();
   }
-  return NextResponse.json(customer);
+  const payload = canViewCustomerContacts(user!)
+    ? customer
+    : { ...customer, contacts: [], opportunities: [] };
+  return NextResponse.json(payload);
 }
 
 export async function PATCH(request: Request, { params }: Params) {
@@ -43,7 +55,9 @@ export async function PATCH(request: Request, { params }: Params) {
   if (!canAccessCustomer(user!, existing)) return apiForbidden();
 
   const body = await request.json();
-  const { ownerUserId, ownerName, aeName } = await resolveCustomerOwners(body, user!);
+  const { ownerUserId, ownerName, aeName } = isAssistant(user!.role)
+    ? { ownerUserId: existing.ownerUserId, ownerName: existing.ownerName, aeName: existing.aeName }
+    : await resolveCustomerOwners(body, user!);
 
   const customer = await prisma.customer.update({
     where: { id },
@@ -57,6 +71,7 @@ export async function PATCH(request: Request, { params }: Params) {
       aeName,
       notes: body.notes,
       ownerUserId,
+      ...stripUndefined(oemFieldsFromBody(body)),
     },
   });
   return NextResponse.json(customer);
@@ -65,7 +80,7 @@ export async function PATCH(request: Request, { params }: Params) {
 export async function DELETE(_request: Request, { params }: Params) {
   const { user, error } = await requireApiAuth();
   if (error) return error;
-  if (isEngineer(user!.role)) return apiForbidden();
+  if (isEngineer(user!.role) || !canDeleteCustomer(user!)) return apiForbidden();
 
   const { id } = await params;
   const existing = await prisma.customer.findUnique({ where: { id } });

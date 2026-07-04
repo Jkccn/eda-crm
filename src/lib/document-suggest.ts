@@ -4,6 +4,8 @@ import { STAGE_DEFAULT_DOCUMENT } from "@/lib/constants";
 type ExecutionState = {
   hasContract: boolean;
   hasVendorBooking: boolean;
+  hasVendorInvoice: boolean;
+  hasVendorPayment: boolean;
   hasDelivery: boolean;
   hasAcceptance: boolean;
   hasInvoice: boolean;
@@ -24,6 +26,23 @@ export function suggestDocumentCategory(
     }
     if (execution.hasVendorBooking && !hasDoc("vendor_booking")) {
       return { category: "vendor_booking", reason: "已登记原厂下单，建议上传下单文件" };
+    }
+    if (execution.hasVendorBooking && !hasDoc("vendor_goods")) {
+      return { category: "vendor_goods", reason: "已下单，建议上传原厂内部货物/发货清单" };
+    }
+    if (
+      (execution.hasVendorBooking || execution.hasVendorInvoice) &&
+      !hasDoc("vendor_invoice") &&
+      !execution.hasVendorInvoice
+    ) {
+      return { category: "vendor_invoice", reason: "建议上传原厂发给代理商的 Invoice" };
+    }
+    if (
+      (execution.hasVendorInvoice || execution.hasVendorPayment) &&
+      !hasDoc("vendor_payment") &&
+      !execution.hasVendorPayment
+    ) {
+      return { category: "vendor_payment", reason: "建议上传向原厂付款凭证" };
     }
     if (execution.hasVendorBooking && !hasDoc("delivery") && !execution.hasDelivery) {
       return { category: "delivery", reason: "已下单，建议上传发货/交付文件" };

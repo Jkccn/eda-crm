@@ -35,6 +35,9 @@ export async function PATCH(request: Request, { params }: Params) {
     data.role = body.role;
   }
   if (body.password) {
+    if (String(body.password).length < 6) {
+      return NextResponse.json({ error: "密码至少 6 位" }, { status: 400 });
+    }
     data.passwordHash = hashPassword(body.password);
   }
 

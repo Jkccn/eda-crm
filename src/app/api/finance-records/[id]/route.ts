@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { FINANCE_STATUSES, FINANCE_TYPES } from "@/lib/constants";
+import { FINANCE_STATUSES } from "@/lib/constants";
+import { isFinanceRecordType } from "@/lib/finance-records";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -10,7 +11,8 @@ export async function PATCH(request: Request, { params }: Params) {
   const item = await prisma.financeRecord.update({
     where: { id },
     data: {
-      recordType: body.recordType && FINANCE_TYPES.includes(body.recordType) ? body.recordType : undefined,
+      recordType: body.recordType && isFinanceRecordType(body.recordType) ? body.recordType : undefined,
+      recordNo: body.recordNo !== undefined ? body.recordNo?.trim() || null : undefined,
       amount: body.amount != null ? Number(body.amount) : body.amount === null ? null : undefined,
       currency: body.currency,
       recordDate: body.recordDate ? new Date(body.recordDate) : body.recordDate === null ? null : undefined,

@@ -5,6 +5,7 @@ import { ActivitiesPanel } from "@/components/opportunities/activities-panel";
 import { ExecutionPanel } from "@/components/opportunities/execution-panel";
 import { FinancePanel } from "@/components/opportunities/finance-panel";
 import { OpportunityInlineEdit } from "@/components/opportunities/opportunity-inline-edit";
+import { OpportunitySectionNav } from "@/components/opportunities/opportunity-section-nav";
 import { OpportunityStageFiles } from "@/components/opportunities/opportunity-stage-files";
 import { QuotePanel } from "@/components/opportunities/quote-panel";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
@@ -29,7 +30,7 @@ export default async function OpportunityDetailPage({ params }: Props) {
       vendorBookings: { take: 1 },
       deliveries: { take: 1 },
       acceptances: { take: 1 },
-      financeRecords: { where: { recordType: "Invoice" }, take: 1 },
+      financeRecords: { select: { recordType: true } },
       licenses: { take: 1 },
     },
   });
@@ -60,7 +61,9 @@ export default async function OpportunityDetailPage({ params }: Props) {
     hasVendorBooking: opportunity.vendorBookings.length > 0,
     hasDelivery: opportunity.deliveries.length > 0,
     hasAcceptance: opportunity.acceptances.length > 0,
-    hasInvoice: opportunity.financeRecords.length > 0,
+    hasInvoice: opportunity.financeRecords.some((r) => r.recordType === "Invoice"),
+    hasVendorInvoice: opportunity.financeRecords.some((r) => r.recordType === "VendorInvoice"),
+    hasVendorPayment: opportunity.financeRecords.some((r) => r.recordType === "VendorPayment"),
     hasLicense: opportunity.licenses.length > 0,
     documentCategories: opportunity.documents.map((d) => d.category),
   });
@@ -68,90 +71,104 @@ export default async function OpportunityDetailPage({ params }: Props) {
   const suggestLabel = DOCUMENT_CATEGORIES.find((c) => c.key === suggestion.category)?.label;
 
   return (
-    <div className="space-y-6">
-      <Link
-        href={`/customers/${opportunity.customerId}`}
-        className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-indigo-600"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        返回 {opportunity.customer.accountName}
-      </Link>
+    <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+      <aside className="sticky top-4 z-10 w-full max-h-[calc(100vh-2rem)] shrink-0 self-start overflow-y-auto lg:w-44">
+        <OpportunitySectionNav />
+      </aside>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="space-y-4">
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900">{opportunity.name}</h1>
-            <p className="mt-2 text-sm text-slate-500">
-              {opportunity.type}
-              {opportunity.productLine && ` · ${opportunity.productLine}`}
-              {" · 预计 "}
-              {formatDate(opportunity.closeDate)}
-              {opportunity.ownerName && ` · 销售 ${opportunity.ownerName}`}
-              {opportunity.aeName && ` · 技术 ${opportunity.aeName}`}
+      <div className="min-w-0 flex-1 space-y-6">
+        <Link
+          href={`/customers/${opportunity.customerId}`}
+          className="link-hover inline-flex items-center gap-1 text-sm text-slate-500"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          返回 {opportunity.customer.accountName}
+        </Link>
+
+        <section id="opp-overview" className="scroll-mt-6 glass-card rounded-2xl p-6">
+            <div className="space-y-4">
+              <div>
+                <h1 className="page-title">{opportunity.name}</h1>
+                <p className="mt-2 text-sm text-slate-500">
+                  {opportunity.type}
+                  {opportunity.productLine && ` · ${opportunity.productLine}`}
+                  {" · 预计 "}
+                  {formatDate(opportunity.closeDate)}
+                  {opportunity.ownerName && ` · 销售 ${opportunity.ownerName}`}
+                  {opportunity.aeName && ` · 技术 ${opportunity.aeName}`}
+                </p>
+              </div>
+              <OpportunityInlineEdit
+                opportunityId={opportunity.id}
+                initial={{
+                  stage: opportunity.stage,
+                  dealSize: opportunity.dealSize,
+                  currency: opportunity.currency,
+                  nextStep: opportunity.nextStep,
+                }}
+              />
+            </div>
+          </section>
+
+          <section id="opp-activities" className="scroll-mt-6">
+            <Card>
+              <CardHeader><h2 className="text-sm font-semibold text-slate-200">销售活动</h2></CardHeader>
+              <CardBody><ActivitiesPanel opportunityId={opportunity.id} /></CardBody>
+            </Card>
+          </section>
+
+          <section id="opp-quotes" className="scroll-mt-6">
+            <Card>
+              <CardHeader><h2 className="text-sm font-semibold text-slate-200">报价记录</h2></CardHeader>
+              <CardBody>
+                <QuotePanel
+                  opportunityId={opportunity.id}
+                  currency={opportunity.currency}
+                  initialQuotes={opportunity.quotes}
+                  quoteDocuments={quoteDocuments}
+                />
+              </CardBody>
+            </Card>
+          </section>
+
+          <section id="opp-execution" className="scroll-mt-6">
+            <Card>
+              <CardHeader>
+                <h2 className="text-sm font-semibold text-slate-200">合同与执行</h2>
+                <p className="text-xs text-slate-500">合同、原厂下单、交付、验收</p>
+              </CardHeader>
+              <CardBody><ExecutionPanel opportunityId={opportunity.id} /></CardBody>
+            </Card>
+          </section>
+
+          <section id="opp-finance" className="scroll-mt-6">
+            <Card>
+              <CardHeader><h2 className="text-sm font-semibold text-slate-200">财务与 License</h2></CardHeader>
+              <CardBody>
+                <FinancePanel
+                  opportunityId={opportunity.id}
+                  customerId={opportunity.customerId}
+                  currency={opportunity.currency}
+                />
+              </CardBody>
+            </Card>
+          </section>
+
+          <section id="opp-files" className="scroll-mt-6">
+            <h2 className="mb-4 text-lg font-semibold text-slate-100">阶段文件</h2>
+            <p className="mb-4 text-sm text-slate-500">
+              按分类管理文件，支持上传与在线预览
+              {suggestLabel && (
+                <span className="ml-2 text-cyan-400">· 建议上传：{suggestLabel}</span>
+              )}
             </p>
-          </div>
-          <OpportunityInlineEdit
-            opportunityId={opportunity.id}
-            initial={{
-              stage: opportunity.stage,
-              dealSize: opportunity.dealSize,
-              currency: opportunity.currency,
-              nextStep: opportunity.nextStep,
-            }}
-          />
+            <OpportunityStageFiles
+              opportunityId={opportunity.id}
+              initialDocuments={serializedDocs}
+              highlightCategory={suggestion.category}
+            />
+          </section>
         </div>
-      </div>
-
-      <Card>
-        <CardHeader><h2 className="text-sm font-semibold text-slate-800">销售活动</h2></CardHeader>
-        <CardBody><ActivitiesPanel opportunityId={opportunity.id} /></CardBody>
-      </Card>
-
-      <Card>
-        <CardHeader><h2 className="text-sm font-semibold text-slate-800">报价记录</h2></CardHeader>
-        <CardBody>
-          <QuotePanel
-            opportunityId={opportunity.id}
-            currency={opportunity.currency}
-            initialQuotes={opportunity.quotes}
-            quoteDocuments={quoteDocuments}
-          />
-        </CardBody>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <h2 className="text-sm font-semibold text-slate-800">合同与执行</h2>
-          <p className="text-xs text-slate-500">合同、原厂下单、交付、验收</p>
-        </CardHeader>
-        <CardBody><ExecutionPanel opportunityId={opportunity.id} /></CardBody>
-      </Card>
-
-      <Card>
-        <CardHeader><h2 className="text-sm font-semibold text-slate-800">财务与 License</h2></CardHeader>
-        <CardBody>
-          <FinancePanel
-            opportunityId={opportunity.id}
-            customerId={opportunity.customerId}
-            currency={opportunity.currency}
-          />
-        </CardBody>
-      </Card>
-
-      <div>
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">阶段文件</h2>
-        <p className="mb-4 text-sm text-slate-500">
-          按分类管理文件，支持上传与在线预览
-          {suggestLabel && (
-            <span className="ml-2 text-indigo-600">· 建议上传：{suggestLabel}</span>
-          )}
-        </p>
-        <OpportunityStageFiles
-          opportunityId={opportunity.id}
-          initialDocuments={serializedDocs}
-          highlightCategory={suggestion.category}
-        />
-      </div>
     </div>
   );
 }

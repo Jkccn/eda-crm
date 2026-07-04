@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { Plus, Check } from "lucide-react";
@@ -37,7 +37,7 @@ export function ActivitiesPanel({ opportunityId }: { opportunityId: string }) {
   return (
     <div className="space-y-4">
       <form
-        className="flex flex-wrap items-end gap-2 rounded-lg border border-dashed border-slate-200 p-3"
+        className="flex flex-wrap items-end gap-2 rounded-lg border border-dashed border-white/10 p-3"
         onSubmit={async (e) => {
           e.preventDefault();
           if (!title.trim()) return;

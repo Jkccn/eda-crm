@@ -1,8 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #060a14;
+  --foreground: #e2e8f0;
+  --surface: #0c1222;
+  --surface-foreground: #f1f5f9;
+  --muted: #94a3b8;
+  --accent: #22d3ee;
+  --accent-2: #818cf8;
+  --accent-glow: rgba(34, 211, 238, 0.35);
+  --sidebar: rgba(8, 12, 24, 0.92);
+  --border-glass: rgba(255, 255, 255, 0.08);
+  --card-border: rgba(255, 255, 255, 0.08);
+  --card-bg: rgba(15, 23, 42, 0.65);
 }
 
 @theme inline {
@@ -19,6 +29,232 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+/* 科技网格背景 */
+.app-mesh-bg {
+  background-color: #060a14;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(34, 211, 238, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 100% 0%, rgba(129, 140, 248, 0.1), transparent),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+}
+
+.app-sidebar {
+  background: var(--sidebar);
+  border-right: 1px solid var(--border-glass);
+  backdrop-filter: blur(20px);
+}
+
+.app-content-surface {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.glass-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.glass-card:hover {
+  border-color: rgba(34, 211, 238, 0.6);
+  background: rgba(22, 40, 72, 0.95);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.35),
+    0 12px 40px rgba(34, 211, 238, 0.28);
+}
+
+/* 可点击卡片：悬停时更明显上浮 + 光晕 */
+.hover-lift:hover {
+  transform: translateY(-3px);
+  border-color: rgba(34, 211, 238, 0.7) !important;
+  background: rgba(22, 40, 72, 0.95) !important;
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.4),
+    0 20px 56px rgba(34, 211, 238, 0.32) !important;
+}
+
+/* 列表行悬停 */
+.hover-row {
+  transition: background 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
+}
+
+.hover-row:hover {
+  background: rgba(34, 211, 238, 0.22) !important;
+  box-shadow: inset 4px 0 0 #22d3ee;
+}
+
+/* 链接悬停 */
+.link-hover {
+  transition: color 0.15s ease, text-shadow 0.15s ease;
+}
+
+.link-hover:hover {
+  color: #a5f3fc !important;
+  text-shadow: 0 0 18px rgba(34, 211, 238, 0.65);
+}
+
+/* 侧边栏导航（非当前页） */
+.nav-link-inactive {
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.nav-link-inactive:hover {
+  background: rgba(34, 211, 238, 0.18);
+  border-color: rgba(34, 211, 238, 0.5);
+  color: #f8fafc;
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.2);
+}
+
+.btn-glow {
+  background: linear-gradient(135deg, #0891b2 0%, #6366f1 100%);
+  box-shadow: 0 4px 20px rgba(34, 211, 238, 0.35);
+  transition: all 0.2s ease;
+}
+
+.btn-glow:hover {
+  background: linear-gradient(135deg, #22d3ee 0%, #a5b4fc 100%);
+  box-shadow: 0 8px 32px rgba(34, 211, 238, 0.55);
+  transform: translateY(-1px);
+}
+
+.nav-link-active {
+  background: linear-gradient(135deg, rgba(34, 211, 238, 0.15) 0%, rgba(129, 140, 248, 0.12) 100%);
+  border: 1px solid rgba(34, 211, 238, 0.25);
+  color: #67e8f9;
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.1);
+}
+
+.logo-glow {
+  background: linear-gradient(135deg, #22d3ee 0%, #818cf8 100%);
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.4);
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  background: linear-gradient(135deg, #f8fafc 0%, #94a3b8 50%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.page-subtitle {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.link-accent {
+  color: #22d3ee;
+  transition: color 0.15s;
+}
+
+.link-accent:hover {
+  color: #67e8f9;
+  text-shadow: 0 0 14px rgba(34, 211, 238, 0.45);
+}
+
+.form-panel {
+  border: 1px solid rgba(34, 211, 238, 0.15);
+  background: linear-gradient(135deg, rgba(8, 51, 68, 0.35) 0%, rgba(30, 27, 75, 0.25) 100%);
+  backdrop-filter: blur(12px);
+}
+
+.stat-value {
+  margin-top: 0.25rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #f1f5f9 0%, #22d3ee 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.input-dark,
+textarea.input-dark {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  color: #f1f5f9;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.input-dark:hover,
+textarea.input-dark:hover {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.input-dark:focus,
+textarea.input-dark:focus {
+  border-color: rgba(34, 211, 238, 0.6);
+  box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.2);
+  outline: none;
+}
+
+textarea.input-dark::placeholder {
+  color: #64748b;
+}
+
+.login-mesh {
+  background-color: #030712;
+  background-image:
+    radial-gradient(ellipse 100% 80% at 50% -30%, rgba(34, 211, 238, 0.18), transparent),
+    radial-gradient(ellipse 50% 50% at 80% 50%, rgba(129, 140, 248, 0.12), transparent),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+}
+
+.login-card {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 0 0 1px rgba(34, 211, 238, 0.05),
+    0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+.search-dropdown {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+}
+
+.kanban-column {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.6) 0%, rgba(8, 12, 24, 0.4) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 211, 238, 0.45);
 }
 
 .document-preview-content .office-preview {

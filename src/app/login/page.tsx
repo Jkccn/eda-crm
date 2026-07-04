@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, Suspense } from "react";
+import { LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -49,24 +50,33 @@ function LoginForm() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <div className="mb-6 text-center">
-          <h1 className="text-xl font-bold text-slate-900">EDA CRM</h1>
-          <p className="mt-1 text-sm text-slate-500">登录以继续</p>
+    <div className="login-mesh flex min-h-screen items-center justify-center px-4">
+      <div className="login-card w-full max-w-sm rounded-2xl p-8">
+        <div className="mb-8 text-center">
+          <div className="logo-glow mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl text-white">
+            <LayoutDashboard className="h-7 w-7" />
+          </div>
+          <h1 className="bg-gradient-to-r from-cyan-300 via-white to-indigo-300 bg-clip-text text-2xl font-bold tracking-tight text-transparent">
+            EDA CRM
+          </h1>
+          <p className="mt-2 text-sm text-slate-400">登录以继续</p>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600">用户名</label>
+            <label className="mb-1.5 block text-xs font-medium text-slate-400">用户名</label>
             <Input
               required
+              autoCapitalize="off"
+              autoCorrect="off"
+              spellCheck={false}
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               autoComplete="username"
             />
+            <p className="mt-1 text-[10px] text-slate-600">用户名不区分大小写</p>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-slate-600">密码</label>
+            <label className="mb-1.5 block text-xs font-medium text-slate-400">密码</label>
             <Input
               required
               type="password"
@@ -74,13 +84,14 @@ function LoginForm() {
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
             />
+            <p className="mt-1 text-[10px] text-slate-600">密码区分大小写</p>
           </div>
-          {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p className="text-sm text-rose-400">{error}</p>}
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "登录中…" : "登录"}
           </Button>
         </form>
-        <p className="mt-4 text-center text-xs text-slate-400">
+        <p className="mt-6 text-center text-xs text-slate-600">
           默认账号 admin / admin123（首次 seed 后可用）
         </p>
       </div>

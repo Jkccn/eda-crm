@@ -23,8 +23,8 @@ export default async function OpportunitiesKanbanPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-slate-900">商机看板</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="page-title">商机看板</h1>
+        <p className="page-subtitle">
           拖拽卡片切换阶段 · 点击卡片进入详情
         </p>
       </div>

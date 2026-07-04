@@ -32,7 +32,7 @@ npm run db:seed
 npm run dev
 ```
 
-浏览器打开：**http://localhost:3000**
+浏览器打开：**http://localhost:3001**
 
 ### 生产构建（本地部署）
 

@@ -9,6 +9,7 @@ import {
   normalizeRole,
   type SessionUser,
 } from "@/lib/session";
+import { normalizeUsername } from "@/lib/username";
 
 export { SESSION_COOKIE, type SessionUser } from "@/lib/session";
 
@@ -76,7 +77,8 @@ export async function requireAuth(minRole?: "admin" | "user") {
 }
 
 export async function authenticateUser(username: string, password: string) {
-  const user = await prisma.user.findUnique({ where: { username } });
+  const normalized = normalizeUsername(username);
+  const user = await prisma.user.findUnique({ where: { username: normalized } });
   if (!user || !verifyPassword(password, user.passwordHash)) return null;
   return {
     id: user.id,
