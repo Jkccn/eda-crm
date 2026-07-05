@@ -305,7 +305,7 @@ function FinanceEditForm({
 
   return (
     <div className="flex flex-wrap items-end gap-2">
-      <div className="min-w-[120px]">
+      <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">类型</label>
         <Select value={form.recordType} onChange={(e) => setForm({ ...form, recordType: e.target.value })}>
           {recordTypes.map((o) => (
@@ -314,39 +314,39 @@ function FinanceEditForm({
         </Select>
       </div>
       {(showRecordNo || isVendor) && (
-        <div className="min-w-[120px]">
+        <div className="form-field">
           <label className="mb-1 block text-xs text-slate-500">单号/发票号</label>
           <Input value={form.recordNo} onChange={(e) => setForm({ ...form, recordNo: e.target.value })} />
         </div>
       )}
-      <div className="min-w-[120px]">
+      <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">金额</label>
         <Input type="number" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} />
       </div>
-      <div className="min-w-[120px]">
+      <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">货币</label>
         <Select value={form.currency} onChange={(e) => setForm({ ...form, currency: e.target.value })}>
           {CURRENCIES.map((o) => <option key={o} value={o}>{o}</option>)}
         </Select>
       </div>
       {(showRecordDate || isVendor) ? (
-        <div className="min-w-[120px]">
+        <div className="form-field">
           <label className="mb-1 block text-xs text-slate-500">开票/付款日</label>
           <Input type="date" value={form.recordDate} onChange={(e) => setForm({ ...form, recordDate: e.target.value })} />
         </div>
       ) : (
-        <div className="min-w-[120px]">
+        <div className="form-field">
           <label className="mb-1 block text-xs text-slate-500">到期日</label>
           <Input type="date" value={form.dueDate} onChange={(e) => setForm({ ...form, dueDate: e.target.value })} />
         </div>
       )}
-      <div className="min-w-[120px]">
+      <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">状态</label>
         <Select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
           {FINANCE_STATUSES.map((o) => <option key={o} value={o}>{o}</option>)}
         </Select>
       </div>
-      <div className="min-w-[140px]">
+      <div className="form-field form-field-wide">
         <label className="mb-1 block text-xs text-slate-500">备注</label>
         <Input value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} />
       </div>
@@ -392,25 +392,25 @@ function LicenseEditForm({
 
   return (
     <div className="flex flex-wrap items-end gap-2">
-      <div className="min-w-[120px]">
+      <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">产品线</label>
         <Select value={form.productLine} onChange={(e) => setForm({ ...form, productLine: e.target.value })}>
           {PRODUCT_LINES.map((o) => <option key={o} value={o}>{o}</option>)}
         </Select>
       </div>
-      <div className="min-w-[120px]">
+      <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">席位数</label>
         <Input type="number" value={form.seats} onChange={(e) => setForm({ ...form, seats: e.target.value })} />
       </div>
-      <div className="min-w-[120px]">
+      <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">开始日</label>
         <Input type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} />
       </div>
-      <div className="min-w-[120px]">
+      <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">到期日</label>
         <Input type="date" value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} />
       </div>
-      <div className="min-w-[120px]">
+      <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">状态</label>
         <Select value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
           {LICENSE_STATUSES.map((o) => <option key={o} value={o}>{o}</option>)}
@@ -439,7 +439,7 @@ function FieldInput({ name, label, type = "text", defaultValue }: {
   name: string; label: string; type?: string; defaultValue?: string;
 }) {
   return (
-    <div className="min-w-[120px]">
+    <div className="form-field">
       <label className="mb-1 block text-xs text-slate-500">{label}</label>
       <Input name={name} type={type} defaultValue={defaultValue} />
     </div>
@@ -460,7 +460,7 @@ function FieldSelect({
   labelMap?: Record<string, string>;
 }) {
   return (
-    <div className="min-w-[120px]">
+    <div className="form-field">
       <label className="mb-1 block text-xs text-slate-500">{label}</label>
       <Select name={name} defaultValue={defaultValue || options[0]}>
         {options.map((o) => (

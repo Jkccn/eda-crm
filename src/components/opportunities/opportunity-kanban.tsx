@@ -74,7 +74,8 @@ export function OpportunityKanban({
   }
 
   return (
-    <div className="flex gap-4 overflow-x-auto pb-4">
+    <div className="max-w-full overflow-x-auto pb-4">
+    <div className="flex w-max min-w-full gap-4">
       {OPPORTUNITY_STAGES.map((stage) => (
         <div
           key={stage}
@@ -140,6 +141,7 @@ export function OpportunityKanban({
           </div>
         </div>
       ))}
+    </div>
     </div>
   );
 }

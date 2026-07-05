@@ -74,7 +74,7 @@ export function DocumentPanel({
         </div>
       )}
       <div className="flex flex-wrap items-end gap-3 rounded-xl border border-dashed border-white/10 bg-white/5 p-4">
-        <div className="min-w-[140px]">
+        <div className="form-field form-field-wide">
           <label className="mb-1 block text-xs font-medium text-slate-600">上传分类</label>
           <Select
             value={uploadCategory}

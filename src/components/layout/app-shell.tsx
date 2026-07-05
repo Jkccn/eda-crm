@@ -109,13 +109,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
       <main
         id="app-main-scroll"
-        className="app-mesh-bg h-screen min-w-0 flex-1 overflow-y-auto"
+        className="app-mesh-bg h-screen min-w-0 flex-1 overflow-x-hidden overflow-y-auto"
       >
         <MobileNav items={mobileNav} pathname={pathname} />
         <div className="border-b border-white/5 bg-slate-900/80 px-4 py-3 backdrop-blur-md md:hidden">
           <GlobalSearch variant="mobile" />
         </div>
-        <div className="mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8">{children}</div>
+        <div className="mx-auto w-full min-w-0 max-w-6xl overflow-x-hidden px-3 py-6 sm:px-6 lg:px-8">{children}</div>
       </main>
     </div>
   );

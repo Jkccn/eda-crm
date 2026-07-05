@@ -11,7 +11,7 @@ RUN npm config set registry https://registry.npmmirror.com \
 
 COPY . .
 RUN npx prisma generate
-RUN if [ -f .next/BUILD_ID ]; then echo "Using prebuilt .next from deploy bundle"; else npm run build; fi
+RUN npm run build
 
 RUN mkdir -p uploads data
 

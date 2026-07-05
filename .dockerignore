@@ -9,5 +9,4 @@ prisma/dev.db-journal
 *.md
 .cursor
 .terminals
-.next/dev
-.next/cache
+.next

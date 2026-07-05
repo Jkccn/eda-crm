@@ -51,7 +51,7 @@ export function ActivitiesPanel({ opportunityId }: { opportunityId: string }) {
           load();
         }}
       >
-        <div className="min-w-[200px] flex-1">
+        <div className="form-field">
           <label className="mb-1 block text-xs text-slate-500">活动标题</label>
           <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="下一步行动" required />
         </div>
@@ -125,7 +125,7 @@ function ActivityEditForm({
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap items-end gap-2">
-        <div className="min-w-[200px] flex-1">
+        <div className="form-field">
           <label className="mb-1 block text-xs text-slate-500">标题</label>
           <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
         </div>

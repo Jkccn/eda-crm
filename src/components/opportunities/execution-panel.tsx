@@ -268,7 +268,7 @@ function MiniForm({
       }}
     >
       {fields.map((f) => (
-        <div key={f.key} className="min-w-[120px]">
+        <div key={f.key} className="form-field">
           <label className="mb-1 block text-xs text-slate-500">{f.label}</label>
           <Input
             type={f.type || "text"}
@@ -279,7 +279,7 @@ function MiniForm({
         </div>
       ))}
       {selects.map((s) => (
-        <div key={s.key} className="min-w-[120px]">
+        <div key={s.key} className="form-field">
           <label className="mb-1 block text-xs text-slate-500">{s.label}</label>
           <Select
             value={form[s.key] || s.options[0] || ""}
@@ -374,7 +374,7 @@ function BookingEditForm({
   return (
     <div className="flex flex-wrap items-end gap-2">
       <Field label="下单号" value={form.bookingNo} onChange={(v) => setForm({ ...form, bookingNo: v })} />
-      <div className="min-w-[120px]">
+      <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">供应商</label>
         <Select value={form.vendorId} onChange={(e) => setForm({ ...form, vendorId: e.target.value })}>
           <option value="">未指定</option>
@@ -490,7 +490,7 @@ function Field({
   type?: string;
 }) {
   return (
-    <div className="min-w-[120px]">
+    <div className="form-field">
       <label className="mb-1 block text-xs text-slate-500">{label}</label>
       <Input type={type} value={value} onChange={(e) => onChange(e.target.value)} />
     </div>
@@ -509,7 +509,7 @@ function SelectField({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="min-w-[120px]">
+    <div className="form-field">
       <label className="mb-1 block text-xs text-slate-500">{label}</label>
       <Select value={value} onChange={(e) => onChange(e.target.value)}>
         {options.map((o) => <option key={o} value={o}>{o}</option>)}

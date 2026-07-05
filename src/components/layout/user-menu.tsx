@@ -58,7 +58,7 @@ export function MobileNav({
   pathname: string;
 }) {
   return (
-    <div className="flex gap-1 overflow-x-auto border-b border-white/5 bg-slate-900/90 px-2 py-2 backdrop-blur-md md:hidden">
+    <div className="flex max-w-full flex-wrap gap-1 overflow-x-hidden border-b border-white/5 bg-slate-900/90 px-2 py-2 backdrop-blur-md md:hidden">
       {items.map((item) => {
         const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         return (

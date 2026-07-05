@@ -71,21 +71,22 @@ export default async function OpportunityDetailPage({ params }: Props) {
   const suggestLabel = DOCUMENT_CATEGORIES.find((c) => c.key === suggestion.category)?.label;
 
   return (
-    <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-      <aside className="sticky top-4 z-10 w-full max-h-[calc(100vh-2rem)] shrink-0 self-start overflow-y-auto lg:w-44">
-        <OpportunitySectionNav />
-      </aside>
+    <div className="space-y-6">
+      <Link
+        href={`/customers/${opportunity.customerId}`}
+        className="link-hover inline-flex items-center gap-1 text-sm text-slate-500"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        返回 {opportunity.customer.accountName}
+      </Link>
 
-      <div className="min-w-0 flex-1 space-y-6">
-        <Link
-          href={`/customers/${opportunity.customerId}`}
-          className="link-hover inline-flex items-center gap-1 text-sm text-slate-500"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          返回 {opportunity.customer.accountName}
-        </Link>
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+        <aside className="sticky top-0 z-10 w-full min-w-0 shrink-0 self-start border-b border-white/5 bg-[#060a14]/95 py-2 backdrop-blur-md lg:static lg:w-44 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:border-0 lg:bg-transparent lg:py-0 lg:backdrop-blur-none">
+          <OpportunitySectionNav />
+        </aside>
 
-        <section id="opp-overview" className="scroll-mt-6 glass-card rounded-2xl p-6">
+        <div className="min-w-0 flex-1 space-y-6">
+        <section id="opp-overview" className="scroll-mt-24 glass-card rounded-2xl p-4 sm:p-6 lg:scroll-mt-6">
             <div className="space-y-4">
               <div>
                 <h1 className="page-title">{opportunity.name}</h1>
@@ -110,14 +111,14 @@ export default async function OpportunityDetailPage({ params }: Props) {
             </div>
           </section>
 
-          <section id="opp-activities" className="scroll-mt-6">
+          <section id="opp-activities" className="scroll-mt-24 lg:scroll-mt-6">
             <Card>
               <CardHeader><h2 className="text-sm font-semibold text-slate-200">销售活动</h2></CardHeader>
               <CardBody><ActivitiesPanel opportunityId={opportunity.id} /></CardBody>
             </Card>
           </section>
 
-          <section id="opp-quotes" className="scroll-mt-6">
+          <section id="opp-quotes" className="scroll-mt-24 lg:scroll-mt-6">
             <Card>
               <CardHeader><h2 className="text-sm font-semibold text-slate-200">报价记录</h2></CardHeader>
               <CardBody>
@@ -131,7 +132,7 @@ export default async function OpportunityDetailPage({ params }: Props) {
             </Card>
           </section>
 
-          <section id="opp-execution" className="scroll-mt-6">
+          <section id="opp-execution" className="scroll-mt-24 lg:scroll-mt-6">
             <Card>
               <CardHeader>
                 <h2 className="text-sm font-semibold text-slate-200">合同与执行</h2>
@@ -141,7 +142,7 @@ export default async function OpportunityDetailPage({ params }: Props) {
             </Card>
           </section>
 
-          <section id="opp-finance" className="scroll-mt-6">
+          <section id="opp-finance" className="scroll-mt-24 lg:scroll-mt-6">
             <Card>
               <CardHeader><h2 className="text-sm font-semibold text-slate-200">财务与 License</h2></CardHeader>
               <CardBody>
@@ -154,7 +155,7 @@ export default async function OpportunityDetailPage({ params }: Props) {
             </Card>
           </section>
 
-          <section id="opp-files" className="scroll-mt-6">
+          <section id="opp-files" className="scroll-mt-24 lg:scroll-mt-6">
             <h2 className="mb-4 text-lg font-semibold text-slate-100">阶段文件</h2>
             <p className="mb-4 text-sm text-slate-500">
               按分类管理文件，支持上传与在线预览
@@ -169,6 +170,7 @@ export default async function OpportunityDetailPage({ params }: Props) {
             />
           </section>
         </div>
+      </div>
     </div>
   );
 }

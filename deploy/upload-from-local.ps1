@@ -9,14 +9,12 @@ $Archive = Join-Path $env:TEMP "eda-crm-deploy.tgz"
 
 Push-Location $ProjectRoot
 try {
-  Write-Host ">> 本地构建..."
-  npm run build
-
-  Write-Host ">> 打包（含 .next，不含 node_modules/.git）..."
+  Write-Host ">> 打包（不含 .next/node_modules，由 Docker 在 Linux 内构建）..."
   if (Test-Path $Archive) { Remove-Item $Archive -Force }
   tar -czf $Archive `
     --exclude=node_modules `
     --exclude=.git `
+    --exclude=.next `
     --exclude=prisma/dev.db `
     --exclude=uploads `
     --exclude=data `
@@ -34,7 +32,7 @@ mkdir -p data uploads
 tar -xzf eda-crm-deploy.tgz
 rm -f eda-crm-deploy.tgz
 if [ ! -f .env ]; then
-  echo "SESSION_SECRET=\$(openssl rand -hex 32)" > .env
+  echo "SESSION_SECRET=`$(openssl rand -hex 32)" > .env
   echo "CRON_SECRET=" >> .env
 fi
 mkdir -p /www/server/panel/vhost/nginx/extension/crm.eegle.com.cn
