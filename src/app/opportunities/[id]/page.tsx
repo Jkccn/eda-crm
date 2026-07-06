@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { ActivitiesPanel } from "@/components/opportunities/activities-panel";
 import { ExecutionPanel } from "@/components/opportunities/execution-panel";
 import { FinancePanel } from "@/components/opportunities/finance-panel";
+import { OpportunityHeaderActions } from "@/components/opportunities/opportunity-header-actions";
 import { OpportunityInlineEdit } from "@/components/opportunities/opportunity-inline-edit";
 import { OpportunitySectionNav } from "@/components/opportunities/opportunity-section-nav";
 import { OpportunityStageFiles } from "@/components/opportunities/opportunity-stage-files";
@@ -81,7 +82,7 @@ export default async function OpportunityDetailPage({ params }: Props) {
       </Link>
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-        <aside className="sticky top-0 z-10 w-full min-w-0 shrink-0 self-start border-b border-white/5 bg-[#060a14]/95 py-2 backdrop-blur-md lg:static lg:w-44 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:border-0 lg:bg-transparent lg:py-0 lg:backdrop-blur-none">
+        <aside className="sticky top-0 z-10 w-full min-w-0 shrink-0 self-start border-b border-white/5 bg-[#060a14]/95 py-2 backdrop-blur-md lg:top-4 lg:w-44 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:border-0 lg:bg-transparent lg:py-0 lg:backdrop-blur-none">
           <OpportunitySectionNav />
         </aside>
 
@@ -89,7 +90,11 @@ export default async function OpportunityDetailPage({ params }: Props) {
         <section id="opp-overview" className="scroll-mt-24 glass-card rounded-2xl p-4 sm:p-6 lg:scroll-mt-6">
             <div className="space-y-4">
               <div>
-                <h1 className="page-title">{opportunity.name}</h1>
+                <OpportunityHeaderActions
+                  opportunityId={opportunity.id}
+                  customerId={opportunity.customerId}
+                  initialName={opportunity.name}
+                />
                 <p className="mt-2 text-sm text-slate-500">
                   {opportunity.type}
                   {opportunity.productLine && ` · ${opportunity.productLine}`}

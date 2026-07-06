@@ -1,9 +1,10 @@
 ﻿"use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { Download, Eye, Trash2, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 import {
   documentDownloadUrl,
   documentPreviewUrl,
@@ -56,6 +57,55 @@ export function DocumentFileActions({
   );
 }
 
+export function FileUploadDropzone({
+  onFile,
+  uploading,
+  disabled,
+  className,
+  children,
+}: {
+  onFile: (file: File) => void;
+  uploading?: boolean;
+  disabled?: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
+  const [dragging, setDragging] = useState(false);
+  const blocked = disabled || uploading;
+
+  return (
+    <div
+      className={cn(
+        "transition",
+        className,
+        dragging && !blocked && "border-cyan-400/60 bg-cyan-500/10 ring-2 ring-cyan-400/30",
+        blocked && "opacity-60",
+      )}
+      onDragEnter={(e) => {
+        e.preventDefault();
+        if (!blocked) setDragging(true);
+      }}
+      onDragLeave={(e) => {
+        e.preventDefault();
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragging(false);
+      }}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+        setDragging(false);
+        if (blocked) return;
+        const file = e.dataTransfer.files?.[0];
+        if (file) onFile(file);
+      }}
+    >
+      {children}
+      {dragging && !blocked && (
+        <p className="mt-2 w-full text-center text-xs text-cyan-300">松开鼠标上传文件</p>
+      )}
+    </div>
+  );
+}
+
 export function CategoryFileUpload({
   opportunityId,
   category,
@@ -91,36 +141,43 @@ export function CategoryFileUpload({
   }
 
   return (
-    <div className="flex flex-wrap items-end gap-2">
-      {error && <p className="w-full text-xs text-red-600">{error}</p>}
-      <div className="w-20">
-        <label className="mb-1 block text-xs text-slate-500">版本</label>
-        <Input
-          type="number"
-          placeholder="可选"
-          value={version}
-          onChange={(e) => setVersion(e.target.value)}
+    <FileUploadDropzone
+      onFile={handleUpload}
+      uploading={uploading}
+      className="rounded-lg border border-dashed border-white/10 bg-white/5 p-3"
+    >
+      <div className="flex flex-wrap items-end gap-2">
+        {error && <p className="w-full text-xs text-red-600">{error}</p>}
+        <div className="w-20">
+          <label className="mb-1 block text-xs text-slate-500">版本</label>
+          <Input
+            type="number"
+            placeholder="可选"
+            value={version}
+            onChange={(e) => setVersion(e.target.value)}
+          />
+        </div>
+        <input
+          ref={fileRef}
+          type="file"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) handleUpload(file);
+          }}
         />
+        <Button
+          type="button"
+          variant="secondary"
+          disabled={uploading}
+          onClick={() => fileRef.current?.click()}
+        >
+          <Upload className="h-4 w-4" />
+          {uploading ? "上传中…" : "选择或拖入文件"}
+        </Button>
+        <p className="w-full text-[11px] text-slate-500">支持将文件拖拽到此处上传</p>
       </div>
-      <input
-        ref={fileRef}
-        type="file"
-        className="hidden"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file) handleUpload(file);
-        }}
-      />
-      <Button
-        type="button"
-        variant="secondary"
-        disabled={uploading}
-        onClick={() => fileRef.current?.click()}
-      >
-        <Upload className="h-4 w-4" />
-        {uploading ? "上传中…" : "上传文件"}
-      </Button>
-    </div>
+    </FileUploadDropzone>
   );
 }
 

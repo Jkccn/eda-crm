@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { DOCUMENT_CATEGORIES, type DocumentCategoryKey } from "@/lib/constants";
 import { formatDate, formatFileSize } from "@/lib/utils";
+import { FileUploadDropzone } from "@/components/documents/document-file-actions";
 
 export type DocumentItem = {
   id: string;
@@ -73,7 +74,11 @@ export function DocumentPanel({
           建议上传「{DOCUMENT_CATEGORIES.find((c) => c.key === suggestedCategory)?.label}」— {suggestReason}
         </div>
       )}
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-dashed border-white/10 bg-white/5 p-4">
+      <FileUploadDropzone
+        onFile={handleUpload}
+        uploading={uploading}
+        className="flex flex-wrap items-end gap-3 rounded-xl border border-dashed border-white/10 bg-white/5 p-4"
+      >
         <div className="form-field form-field-wide">
           <label className="mb-1 block text-xs font-medium text-slate-600">上传分类</label>
           <Select
@@ -109,9 +114,10 @@ export function DocumentPanel({
           onClick={() => fileRef.current?.click()}
         >
           <Upload className="h-4 w-4" />
-          {uploading ? "上传中…" : "选择文件"}
+          {uploading ? "上传中…" : "选择或拖入文件"}
         </Button>
-      </div>
+        <p className="w-full text-xs text-slate-500">支持将文件拖拽到此处上传</p>
+      </FileUploadDropzone>
 
       {filtered.length === 0 ? (
         <div className="rounded-xl border border-white/10 bg-slate-900/50 py-12 text-center text-sm text-slate-500">

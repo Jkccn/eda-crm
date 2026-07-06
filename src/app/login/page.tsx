@@ -91,9 +91,6 @@ function LoginForm() {
             {loading ? "登录中…" : "登录"}
           </Button>
         </form>
-        <p className="mt-6 text-center text-xs text-slate-600">
-          默认账号 admin / admin123（首次 seed 后可用）
-        </p>
       </div>
     </div>
   );
