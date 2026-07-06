@@ -263,8 +263,8 @@ export default function UsersAdminPage() {
                   ) : (
                     <>
                       <td className="px-4 py-3 font-medium text-slate-100">{u.username}</td>
-                      <td className="px-4 py-3 text-slate-600">{u.displayName || "—"}</td>
-                      <td className="px-4 py-3 text-slate-600">
+                      <td className="px-4 py-3 text-slate-400">{u.displayName || "—"}</td>
+                      <td className="px-4 py-3 text-slate-400">
                         {ROLE_LABELS[u.role as keyof typeof ROLE_LABELS] || u.role}
                       </td>
                       <td className="px-4 py-3">

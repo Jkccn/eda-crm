@@ -96,6 +96,10 @@ async function patchJson(url: string, body: Record<string, unknown>) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
+  if (!res.ok) {
+    const data = await res.json().catch(() => null);
+    alert(data?.error || "保存失败，请稍后重试");
+  }
   return res.ok;
 }
 

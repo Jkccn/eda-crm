@@ -13,6 +13,7 @@ import {
   Users,
   Settings2,
   FileBarChart2,
+  Sparkles,
 } from "lucide-react";
 import { GlobalSearch } from "@/components/search/global-search";
 import { UserMenu, MobileNav } from "@/components/layout/user-menu";
@@ -25,6 +26,7 @@ const ALL_NAV: { module: AppModule; href: string; label: string; icon: typeof Bu
   { module: "opportunities", href: "/opportunities", label: "商机看板", icon: Kanban },
   { module: "dashboard", href: "/dashboard", label: "仪表盘", icon: BarChart3 },
   { module: "reports", href: "/reports", label: "信息汇报", icon: FileBarChart2 },
+  { module: "ai", href: "/assistant", label: "AI 助手", icon: Sparkles },
   { module: "vendors", href: "/vendors", label: "供应商", icon: Truck },
   { module: "support", href: "/support", label: "技术支持", icon: Headphones },
   { module: "settings", href: "/admin/settings", label: "信息配置", icon: Settings2 },
@@ -40,6 +42,7 @@ function isNavActive(pathname: string, href: string) {
   if (href === "/admin/settings") return pathname.startsWith("/admin/settings");
   if (href === "/reports") return pathname.startsWith("/reports");
   if (href === "/vendors") return pathname.startsWith("/vendors");
+  if (href === "/assistant") return pathname.startsWith("/assistant");
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
@@ -105,7 +108,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
         <UserMenu />
-        <p className="shrink-0 px-6 pb-4 text-[10px] uppercase tracking-widest text-slate-600">本地部署 · v1.0</p>
+        <p className="shrink-0 px-6 pb-4 text-[10px] uppercase tracking-widest text-slate-600">本地部署 · v2.0</p>
       </aside>
       <main
         id="app-main-scroll"
@@ -115,7 +118,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="border-b border-white/5 bg-slate-900/80 px-4 py-3 backdrop-blur-md md:hidden">
           <GlobalSearch variant="mobile" />
         </div>
-        <div className="mx-auto w-full min-w-0 max-w-6xl overflow-x-hidden px-3 py-6 sm:px-6 lg:px-8">{children}</div>
+        {/* overflow-x-clip（而非 hidden）：防横向溢出的同时不破坏子元素 position:sticky */}
+        <div className="page-enter mx-auto w-full min-w-0 max-w-6xl overflow-x-clip px-3 py-6 sm:px-6 lg:px-8">{children}</div>
       </main>
     </div>
   );

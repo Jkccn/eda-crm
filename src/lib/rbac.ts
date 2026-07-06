@@ -11,9 +11,9 @@ export function isUserRole(role: string): role is UserRole {
 
 /** 各角色可见的导航模块 */
 const ROLE_MODULES: Record<UserRole, AppModule[]> = {
-  admin: ["customers", "opportunities", "dashboard", "vendors", "support", "users", "settings", "reports"],
-  manager: ["customers", "opportunities", "dashboard", "vendors", "support", "reports"],
-  sales: ["customers", "opportunities", "dashboard", "reports"],
+  admin: ["customers", "opportunities", "dashboard", "vendors", "support", "users", "settings", "reports", "ai"],
+  manager: ["customers", "opportunities", "dashboard", "vendors", "support", "reports", "ai"],
+  sales: ["customers", "opportunities", "dashboard", "reports", "ai"],
   engineer: ["support"],
   assistant: ["customers", "dashboard"],
 };
@@ -143,6 +143,7 @@ export function moduleForPath(pathname: string): AppModule | null {
   if (pathname.startsWith("/vendors")) return "vendors";
   if (pathname.startsWith("/support")) return "support";
   if (pathname.startsWith("/reports")) return "reports";
+  if (pathname.startsWith("/assistant")) return "ai";
   if (pathname.startsWith("/admin/settings")) return "settings";
   if (pathname.startsWith("/admin/users") || pathname.startsWith("/admin/data")) return "users";
   return null;

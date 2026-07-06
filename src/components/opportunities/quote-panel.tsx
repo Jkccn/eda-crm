@@ -166,7 +166,7 @@ export function QuotePanel({
         >
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className="mb-1 block text-xs font-medium text-slate-600">报价名称 *</label>
+              <label className="mb-1 block text-xs font-medium text-slate-400">报价名称 *</label>
               <Input
                 required
                 placeholder="CAM350 维保报价 V3"
@@ -175,7 +175,7 @@ export function QuotePanel({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600">版本</label>
+              <label className="mb-1 block text-xs font-medium text-slate-400">版本</label>
               <Input
                 type="number"
                 min={1}
@@ -184,15 +184,18 @@ export function QuotePanel({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600">金额</label>
+              <label className="mb-1 block text-xs font-medium text-slate-400">金额</label>
               <Input
                 type="number"
+                step="0.01"
+                min="0"
+                inputMode="decimal"
                 value={form.amount}
                 onChange={(e) => setForm({ ...form, amount: e.target.value })}
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600">货币</label>
+              <label className="mb-1 block text-xs font-medium text-slate-400">货币</label>
               <Select
                 value={form.currency}
                 onChange={(e) => setForm({ ...form, currency: e.target.value })}
@@ -203,7 +206,7 @@ export function QuotePanel({
               </Select>
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-slate-600">状态</label>
+              <label className="mb-1 block text-xs font-medium text-slate-400">状态</label>
               <Select
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value })}
@@ -214,7 +217,7 @@ export function QuotePanel({
               </Select>
             </div>
             <div className="flex items-end">
-              <label className="flex items-center gap-2 text-sm text-slate-600">
+              <label className="flex items-center gap-2 text-sm text-slate-400">
                 <input
                   type="checkbox"
                   checked={form.isFinal}
@@ -248,31 +251,31 @@ export function QuotePanel({
                   <div className="space-y-3">
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div className="sm:col-span-2">
-                        <label className="mb-1 block text-xs font-medium text-slate-600">报价名称</label>
+                        <label className="mb-1 block text-xs font-medium text-slate-400">报价名称</label>
                         <Input value={editForm.name} onChange={(e) => setEditForm({ ...editForm, name: e.target.value })} />
                       </div>
                       <div>
-                        <label className="mb-1 block text-xs font-medium text-slate-600">版本</label>
+                        <label className="mb-1 block text-xs font-medium text-slate-400">版本</label>
                         <Input type="number" min={1} value={editForm.version} onChange={(e) => setEditForm({ ...editForm, version: e.target.value })} />
                       </div>
                       <div>
-                        <label className="mb-1 block text-xs font-medium text-slate-600">金额</label>
-                        <Input type="number" value={editForm.amount} onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })} />
+                        <label className="mb-1 block text-xs font-medium text-slate-400">金额</label>
+                        <Input type="number" step="0.01" min="0" inputMode="decimal" value={editForm.amount} onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })} />
                       </div>
                       <div>
-                        <label className="mb-1 block text-xs font-medium text-slate-600">货币</label>
+                        <label className="mb-1 block text-xs font-medium text-slate-400">货币</label>
                         <Select value={editForm.currency} onChange={(e) => setEditForm({ ...editForm, currency: e.target.value })}>
                           {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
                         </Select>
                       </div>
                       <div>
-                        <label className="mb-1 block text-xs font-medium text-slate-600">状态</label>
+                        <label className="mb-1 block text-xs font-medium text-slate-400">状态</label>
                         <Select value={editForm.status} onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}>
                           {QUOTE_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
                         </Select>
                       </div>
                       <div className="flex items-end">
-                        <label className="flex items-center gap-2 text-sm text-slate-600">
+                        <label className="flex items-center gap-2 text-sm text-slate-400">
                           <input type="checkbox" checked={editForm.isFinal} onChange={(e) => setEditForm({ ...editForm, isFinal: e.target.checked })} />
                           标记为最终版
                         </label>
@@ -296,7 +299,7 @@ export function QuotePanel({
                       )}
                       <span className="text-xs text-slate-500">{q.status}</span>
                     </div>
-                    <p className="mt-1 text-sm text-slate-600">
+                    <p className="mt-1 text-sm text-slate-400">
                       {formatCurrency(q.amount, q.currency)}
                     </p>
                     <UpdatedAtText at={q.updatedAt} />

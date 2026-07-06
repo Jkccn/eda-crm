@@ -122,7 +122,7 @@ export default function AdminDataPage() {
             </h2>
           </CardHeader>
           <CardBody className="space-y-3">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-400">
               ZIP 备份包含 SQLite 数据库与 uploads 目录下全部上传文件，适合完整迁移或灾难恢复。
             </p>
             <div className="flex flex-wrap gap-2">
@@ -149,7 +149,7 @@ export default function AdminDataPage() {
             </h2>
           </CardHeader>
           <CardBody className="space-y-3">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-400">
               上传此前导出的 ZIP 备份包。恢复后请重启开发服务器（npm run dev）。
             </p>
             <input
@@ -187,7 +187,7 @@ export default function AdminDataPage() {
             {loading === "reindex" ? "扫描中…" : "扫描并补建记录"}
           </Button>
         </CardHeader>
-        <CardBody className="space-y-4 text-sm text-slate-600">
+        <CardBody className="space-y-4 text-sm text-slate-400">
           {scan && (
             <p>
               磁盘文件 {scan.diskFiles} 个 · 待补建 {scan.missingRecords} 个 · 孤立文件{" "}

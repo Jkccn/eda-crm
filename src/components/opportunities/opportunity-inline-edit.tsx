@@ -12,7 +12,7 @@ import {
   OPPORTUNITY_STAGES,
   STAGE_COLORS,
 } from "@/lib/constants";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, parseAmount } from "@/lib/utils";
 
 type Props = {
   opportunityId: string;
@@ -43,7 +43,7 @@ export function OpportunityInlineEdit({ opportunityId, initial }: Props) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         stage: form.stage,
-        dealSize: form.dealSize ? Number(form.dealSize) : null,
+        dealSize: parseAmount(form.dealSize),
         currency: form.currency,
         nextStep: form.nextStep || null,
       }),
@@ -61,6 +61,9 @@ export function OpportunityInlineEdit({ opportunityId, initial }: Props) {
       setDisplay(next);
       setEditing(false);
       router.refresh();
+    } else {
+      const data = await res.json().catch(() => null);
+      alert(data?.error || "保存失败，请稍后重试");
     }
   }
 
@@ -99,10 +102,10 @@ export function OpportunityInlineEdit({ opportunityId, initial }: Props) {
 
   return (
     <div className="form-panel space-y-4 rounded-xl p-4">
-      <p className="text-xs font-medium text-slate-600">快速编辑</p>
+      <p className="text-xs font-medium text-slate-400">快速编辑</p>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">阶段</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">阶段</label>
           <Select
             value={form.stage}
             onChange={(e) => setForm({ ...form, stage: e.target.value })}
@@ -113,15 +116,18 @@ export function OpportunityInlineEdit({ opportunityId, initial }: Props) {
           </Select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">金额</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">金额</label>
           <Input
             type="number"
+            step="0.01"
+            min="0"
+            inputMode="decimal"
             value={form.dealSize}
             onChange={(e) => setForm({ ...form, dealSize: e.target.value })}
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">货币</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">货币</label>
           <Select
             value={form.currency}
             onChange={(e) => setForm({ ...form, currency: e.target.value })}
@@ -132,7 +138,7 @@ export function OpportunityInlineEdit({ opportunityId, initial }: Props) {
           </Select>
         </div>
         <div className="sm:col-span-2 lg:col-span-4">
-          <label className="mb-1 block text-xs font-medium text-slate-600">下一步行动</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">下一步行动</label>
           <Input
             value={form.nextStep}
             onChange={(e) => setForm({ ...form, nextStep: e.target.value })}

@@ -114,7 +114,7 @@ export function CustomerProfilePanel({ initial }: { initial: CustomerData }) {
 
   return (
     <div className="form-panel space-y-4 rounded-xl p-4">
-      <p className="text-xs font-medium text-slate-600">编辑客户信息</p>
+      <p className="text-xs font-medium text-slate-400">编辑客户信息</p>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
           <label className="mb-1 block text-xs text-slate-500">客户名称</label>

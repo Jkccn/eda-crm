@@ -21,4 +21,4 @@ ENV DATABASE_URL="file:./data/dev.db"
 ENV HOSTNAME="0.0.0.0"
 ENV PORT=3001
 
-CMD ["sh", "-c", "mkdir -p data uploads && npx prisma migrate deploy && npm start"]
+CMD ["sh", "-c", "mkdir -p data uploads && node scripts/pre-migrate-backup.mjs && npx prisma migrate deploy && npm start"]

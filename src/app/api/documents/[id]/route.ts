@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { deleteStoredFile, resolveStoragePath } from "@/lib/storage";
 import { getFileExtension, isPreviewable } from "@/lib/document-preview";
 import { ensurePreviewPdf } from "@/lib/office-pdf";
+import { requireOpportunityApiAccess } from "@/lib/api-auth";
 
 export const runtime = "nodejs";
 
@@ -19,6 +20,9 @@ export async function GET(request: Request, { params }: Params) {
   if (!document) {
     return NextResponse.json({ error: "文件不存在" }, { status: 404 });
   }
+
+  const { error } = await requireOpportunityApiAccess(document.opportunityId);
+  if (error) return error;
 
   const absolutePath = resolveStoragePath(document.storagePath);
 
@@ -66,6 +70,9 @@ export async function DELETE(_request: Request, { params }: Params) {
   if (!document) {
     return NextResponse.json({ error: "文件不存在" }, { status: 404 });
   }
+
+  const { error } = await requireOpportunityApiAccess(document.opportunityId);
+  if (error) return error;
 
   await deleteStoredFile(document.storagePath);
   await deleteStoredFile(`${document.storagePath}.preview.pdf`);

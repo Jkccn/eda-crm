@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireApiAuth, apiForbidden } from "@/lib/api-auth";
 import { isGlobalViewer } from "@/lib/rbac";
 import { parseOptionalDate } from "@/lib/oem-registration";
+import { parseAmount } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const { user, error } = await requireApiAuth();
@@ -39,7 +40,7 @@ export async function POST(request: Request) {
       occasionType: body.occasionType,
       eventDate,
       giftDescription: body.giftDescription || null,
-      amount: body.amount ? Number(body.amount) : null,
+      amount: parseAmount(body.amount),
       currency: body.currency || "CNY",
       notes: body.notes || null,
     },

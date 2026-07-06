@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { requireApiAuth, apiForbidden } from "@/lib/api-auth";
 import { canAccessCustomer, isEngineer, opportunityScopeWhere } from "@/lib/rbac";
+import { parseAmount } from "@/lib/utils";
 
 export async function GET(request: Request) {
   const { user, error } = await requireApiAuth();
@@ -53,7 +54,7 @@ export async function POST(request: Request) {
       stage: body.stage || "Discovery",
       type: body.type || "New Business",
       productLine: body.productLine || null,
-      dealSize: body.dealSize ? Number(body.dealSize) : null,
+      dealSize: parseAmount(body.dealSize),
       currency: body.currency || "CNY",
       closeDate: body.closeDate ? new Date(body.closeDate) : null,
       nextStep: body.nextStep || null,

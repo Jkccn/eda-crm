@@ -133,12 +133,12 @@ export function OpportunitySectionNav() {
         )}
       </nav>
 
-      {/* 电脑端：左侧竖向导航 */}
-      <nav className="hidden rounded-xl border border-white/10 bg-slate-900/95 p-2 shadow-lg backdrop-blur-md lg:block">
+      {/* 电脑端：左侧竖向导航（随 aside 固定，不跟内容滚动） */}
+      <nav className="hidden rounded-xl border border-white/10 bg-slate-900/70 p-2 shadow-lg backdrop-blur-md lg:block">
         <p className="mb-2 px-2 text-[10px] font-medium uppercase tracking-widest text-slate-500">
           快速导航
         </p>
-        <div className="flex max-h-[calc(100vh-6rem)] flex-col gap-1 overflow-y-auto pb-1">
+        <div className="flex flex-col gap-1 pb-1">
           {SECTIONS.map((section) => (
             <div key={section.id} className="shrink-0">
               <button

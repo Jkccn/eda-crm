@@ -15,6 +15,14 @@ const adapter = new PrismaBetterSqlite3({ url: `file:${absolutePath}` });
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  // 安全保护：数据库已有数据时禁止重置，防止生产环境误清空。
+  // 仅当显式设置 SEED_FORCE=1 时才允许重建示例数据。
+  const existingUsers = await prisma.user.count();
+  if (existingUsers > 0 && process.env.SEED_FORCE !== "1") {
+    console.log("数据库已有数据，已跳过 seed（防止数据丢失）。如需强制重置示例数据，请设置 SEED_FORCE=1。");
+    return;
+  }
+
   await prisma.renewalTask.deleteMany();
   await prisma.salesActivity.deleteMany();
   await prisma.supportCase.deleteMany();

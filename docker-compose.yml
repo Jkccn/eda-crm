@@ -14,4 +14,4 @@ services:
       - ./data:/app/data
       - ./uploads:/app/uploads
     restart: unless-stopped
-    command: sh -c "mkdir -p data uploads && npx prisma migrate deploy && npm start"
+    command: sh -c "mkdir -p data uploads && node scripts/pre-migrate-backup.mjs && npx prisma migrate deploy && npm start"

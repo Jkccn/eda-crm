@@ -95,29 +95,29 @@ export function CustomerForm({ onCreated }: { onCreated?: () => void }) {
       <h3 className="text-sm font-semibold text-slate-100">新建客户</h3>
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">客户名称 *</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">客户名称 *</label>
           <Input required value={form.accountName} onChange={(e) => setForm({ ...form, accountName: e.target.value })} />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">英文名</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">英文名</label>
           <Input value={form.englishName} onChange={(e) => setForm({ ...form, englishName: e.target.value })} />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">区域</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">区域</label>
           <Select disabled={picklistLoading} value={form.region} onChange={(e) => setForm({ ...form, region: e.target.value })}>
             <option value="">—</option>
             {regions.map((r) => <option key={r} value={r}>{r}</option>)}
           </Select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">行业</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">行业</label>
           <Select disabled={picklistLoading} value={form.industry} onChange={(e) => setForm({ ...form, industry: e.target.value })}>
             <option value="">—</option>
             {industries.map((i) => <option key={i} value={i}>{i}</option>)}
           </Select>
         </div>
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-slate-600">客户描述</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">客户描述</label>
           <textarea
             className="input-dark w-full rounded-lg px-3 py-2 text-sm"
             rows={2}
@@ -126,7 +126,7 @@ export function CustomerForm({ onCreated }: { onCreated?: () => void }) {
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">销售负责人</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">销售负责人</label>
           <Select
             disabled={picklistLoading || isSalesUser}
             value={form.ownerUserId}
@@ -139,7 +139,7 @@ export function CustomerForm({ onCreated }: { onCreated?: () => void }) {
           </Select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">技术负责人</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">技术负责人</label>
           <Select
             disabled={picklistLoading}
             value={form.aeUserId}

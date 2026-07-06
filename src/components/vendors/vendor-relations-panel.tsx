@@ -92,6 +92,10 @@ export function VendorRelationsPanel({ vendorId }: { vendorId: string }) {
           onChange={(e) => setForm({ ...form, giftDescription: e.target.value })}
         />
         <Input
+          type="number"
+          step="0.01"
+          min="0"
+          inputMode="decimal"
           placeholder="金额"
           value={form.amount}
           onChange={(e) => setForm({ ...form, amount: e.target.value })}

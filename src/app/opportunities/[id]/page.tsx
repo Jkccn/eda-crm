@@ -11,15 +11,21 @@ import { OpportunityStageFiles } from "@/components/opportunities/opportunity-st
 import { QuotePanel } from "@/components/opportunities/quote-panel";
 import { Card, CardBody, CardHeader } from "@/components/ui/card";
 import { prisma } from "@/lib/prisma";
+import { getSessionUser } from "@/lib/auth";
+import { canAccessOpportunity } from "@/lib/rbac";
 import { suggestDocumentCategory } from "@/lib/document-suggest";
 import { DOCUMENT_CATEGORIES } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ id: string }> };
 
 export default async function OpportunityDetailPage({ params }: Props) {
+  const user = await getSessionUser();
+  if (!user) redirect("/login");
+
   const { id } = await params;
   const opportunity = await prisma.opportunity.findUnique({
     where: { id },
@@ -37,6 +43,7 @@ export default async function OpportunityDetailPage({ params }: Props) {
   });
 
   if (!opportunity) notFound();
+  if (!canAccessOpportunity(user, opportunity.customerId, opportunity.customer)) notFound();
 
   const serializedDocs = opportunity.documents.map((d) => ({
     id: d.id,
@@ -82,7 +89,7 @@ export default async function OpportunityDetailPage({ params }: Props) {
       </Link>
 
       <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
-        <aside className="sticky top-0 z-10 w-full min-w-0 shrink-0 self-start border-b border-white/5 bg-[#060a14]/95 py-2 backdrop-blur-md lg:top-4 lg:w-44 lg:max-h-[calc(100vh-2rem)] lg:overflow-y-auto lg:border-0 lg:bg-transparent lg:py-0 lg:backdrop-blur-none">
+        <aside className="sticky top-0 z-10 w-full min-w-0 shrink-0 self-start border-b border-white/5 bg-[#060a14]/95 py-2 backdrop-blur-md lg:top-0 lg:w-44 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:border-0 lg:bg-transparent lg:py-0 lg:backdrop-blur-none">
           <OpportunitySectionNav />
         </aside>
 

@@ -80,7 +80,7 @@ export function DocumentPanel({
         className="flex flex-wrap items-end gap-3 rounded-xl border border-dashed border-white/10 bg-white/5 p-4"
       >
         <div className="form-field form-field-wide">
-          <label className="mb-1 block text-xs font-medium text-slate-600">上传分类</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">上传分类</label>
           <Select
             value={uploadCategory}
             onChange={(e) => setUploadCategory(e.target.value as DocumentCategoryKey)}
@@ -91,7 +91,7 @@ export function DocumentPanel({
           </Select>
         </div>
         <div className="w-24">
-          <label className="mb-1 block text-xs font-medium text-slate-600">版本</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">版本</label>
           <Input
             type="number"
             placeholder="可选"

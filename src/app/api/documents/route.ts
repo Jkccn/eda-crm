@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { saveUploadedFile } from "@/lib/storage";
 import { DOCUMENT_CATEGORIES } from "@/lib/constants";
+import { requireOpportunityApiAccess } from "@/lib/api-auth";
 
 const VALID_CATEGORIES = new Set(DOCUMENT_CATEGORIES.map((c) => c.key));
 
@@ -10,13 +11,12 @@ export async function GET(request: Request) {
   const opportunityId = searchParams.get("opportunityId");
   const category = searchParams.get("category");
 
-  if (!opportunityId) {
-    return NextResponse.json({ error: "缺少 opportunityId" }, { status: 400 });
-  }
+  const { error } = await requireOpportunityApiAccess(opportunityId);
+  if (error) return error;
 
   const documents = await prisma.document.findMany({
     where: {
-      opportunityId,
+      opportunityId: opportunityId!,
       ...(category && category !== "all" ? { category } : {}),
     },
     orderBy: { uploadedAt: "desc" },
@@ -39,10 +39,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "无效文件分类" }, { status: 400 });
   }
 
-  const opp = await prisma.opportunity.findUnique({ where: { id: opportunityId } });
-  if (!opp) {
-    return NextResponse.json({ error: "商机不存在" }, { status: 404 });
-  }
+  const { error } = await requireOpportunityApiAccess(opportunityId);
+  if (error) return error;
 
   const saved = await saveUploadedFile(opportunityId, file);
   const document = await prisma.document.create({

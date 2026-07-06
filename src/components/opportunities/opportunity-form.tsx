@@ -53,6 +53,9 @@ export function OpportunityForm({
       setOpen(false);
       onCreated?.();
       router.push(`/opportunities/${opp.id}`);
+    } else {
+      const data = await res.json().catch(() => null);
+      alert(data?.error || "创建失败，请稍后重试");
     }
   }
 
@@ -68,7 +71,7 @@ export function OpportunityForm({
       <p className="text-xs text-slate-500">命名建议：YYYYMM-客户简称-产品-类型</p>
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-slate-600">商机名称 *</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">商机名称 *</label>
           <Input
             required
             placeholder="202606-太极-CAM350-维保"
@@ -77,7 +80,7 @@ export function OpportunityForm({
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">阶段</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">阶段</label>
           <Select value={form.stage} onChange={(e) => setForm({ ...form, stage: e.target.value })}>
             {OPPORTUNITY_STAGES.map((s) => (
               <option key={s} value={s}>{s}</option>
@@ -85,7 +88,7 @@ export function OpportunityForm({
           </Select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">类型</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">类型</label>
           <Select value={form.type} onChange={(e) => setForm({ ...form, type: e.target.value })}>
             {OPPORTUNITY_TYPES.map((t) => (
               <option key={t} value={t}>{t}</option>
@@ -93,7 +96,7 @@ export function OpportunityForm({
           </Select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">产品线</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">产品线</label>
           <Select
             value={form.productLine}
             onChange={(e) => setForm({ ...form, productLine: e.target.value })}
@@ -104,15 +107,18 @@ export function OpportunityForm({
           </Select>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">预计金额</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">预计金额</label>
           <Input
             type="number"
+            step="0.01"
+            min="0"
+            inputMode="decimal"
             value={form.dealSize}
             onChange={(e) => setForm({ ...form, dealSize: e.target.value })}
           />
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-slate-600">预计成交日</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">预计成交日</label>
           <Input
             type="date"
             value={form.closeDate}
@@ -120,7 +126,7 @@ export function OpportunityForm({
           />
         </div>
         <div className="sm:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-slate-600">下一步行动</label>
+          <label className="mb-1 block text-xs font-medium text-slate-400">下一步行动</label>
           <Input
             value={form.nextStep}
             onChange={(e) => setForm({ ...form, nextStep: e.target.value })}

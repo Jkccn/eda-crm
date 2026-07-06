@@ -57,6 +57,7 @@ export const APP_MODULES = [
   "users",
   "settings",
   "reports",
+  "ai",
 ] as const;
 
 /** 商机报备即将过期天数阈值 */

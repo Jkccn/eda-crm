@@ -15,7 +15,7 @@ import {
   VENDOR_FINANCE_TYPES,
   type FinanceRecordType,
 } from "@/lib/constants";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, parseAmount } from "@/lib/utils";
 import {
   EditableRecordList,
   EditActions,
@@ -256,7 +256,7 @@ function FinanceRecordForm({
     >
       <FieldSelect name="recordType" label="类型" options={recordTypes} defaultValue={defaultType} labelMap={FINANCE_TYPE_LABELS} />
       {showRecordNo && <FieldInput name="recordNo" label="单号/发票号" />}
-      <FieldInput name="amount" label="金额" type="number" />
+      <FieldInput name="amount" label="金额" type="number" step="0.01" />
       <FieldSelect name="currency" label="货币" options={CURRENCIES} defaultValue={currency} />
       {showRecordDate && <FieldInput name="recordDate" label="开票/付款日" type="date" />}
       {!showRecordDate && <FieldInput name="dueDate" label="到期日" type="date" />}
@@ -321,7 +321,7 @@ function FinanceEditForm({
       )}
       <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">金额</label>
-        <Input type="number" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} />
+        <Input type="number" step="0.01" min="0" inputMode="decimal" value={form.amount} onChange={(e) => setForm({ ...form, amount: e.target.value })} />
       </div>
       <div className="form-field">
         <label className="mb-1 block text-xs text-slate-500">货币</label>
@@ -357,7 +357,7 @@ function FinanceEditForm({
           await onSave({
             recordType: form.recordType,
             recordNo: form.recordNo || null,
-            amount: form.amount ? Number(form.amount) : null,
+            amount: parseAmount(form.amount),
             currency: form.currency,
             recordDate: form.recordDate || null,
             dueDate: form.dueDate || null,
@@ -435,13 +435,13 @@ function LicenseEditForm({
   );
 }
 
-function FieldInput({ name, label, type = "text", defaultValue }: {
-  name: string; label: string; type?: string; defaultValue?: string;
+function FieldInput({ name, label, type = "text", step, defaultValue }: {
+  name: string; label: string; type?: string; step?: string; defaultValue?: string;
 }) {
   return (
     <div className="form-field">
       <label className="mb-1 block text-xs text-slate-500">{label}</label>
-      <Input name={name} type={type} defaultValue={defaultValue} />
+      <Input name={name} type={type} step={step} defaultValue={defaultValue} />
     </div>
   );
 }

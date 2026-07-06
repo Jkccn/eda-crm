@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireApiAuth, apiForbidden } from "@/lib/api-auth";
 import { isGlobalViewer } from "@/lib/rbac";
 import { parseOptionalDate } from "@/lib/oem-registration";
+import { parseAmount } from "@/lib/utils";
 
 type Params = { params: Promise<{ id: string }> };
 
@@ -20,7 +21,7 @@ export async function PATCH(request: Request, { params }: Params) {
       occasionType: body.occasionType,
       ...(eventDate ? { eventDate } : {}),
       giftDescription: body.giftDescription,
-      amount: body.amount !== undefined ? (body.amount ? Number(body.amount) : null) : undefined,
+      amount: body.amount !== undefined ? parseAmount(body.amount) : undefined,
       currency: body.currency,
       notes: body.notes,
     },

@@ -10,8 +10,19 @@ export function formatCurrency(amount: number | null | undefined, currency = "CN
   return new Intl.NumberFormat("zh-CN", {
     style: "currency",
     currency,
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
   }).format(amount);
+}
+
+/**
+ * 将表单/请求中的金额值安全转换为 number 或 null。
+ * 保留 0（不会被当成空值丢弃），空字符串/undefined/非法数字返回 null。
+ */
+export function parseAmount(value: unknown): number | null {
+  if (value == null || value === "") return null;
+  const n = Number(value);
+  return Number.isFinite(n) ? n : null;
 }
 
 export function formatFileSize(bytes: number | null | undefined) {

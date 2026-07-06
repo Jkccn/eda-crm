@@ -11,7 +11,7 @@ import {
   CURRENCIES,
   EXECUTION_STATUSES,
 } from "@/lib/constants";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDate, parseAmount } from "@/lib/utils";
 import {
   EditableRecordList,
   EditActions,
@@ -272,6 +272,8 @@ function MiniForm({
           <label className="mb-1 block text-xs text-slate-500">{f.label}</label>
           <Input
             type={f.type || "text"}
+            step={f.type === "number" ? "0.01" : undefined}
+            inputMode={f.type === "number" ? "decimal" : undefined}
             placeholder={f.placeholder}
             value={form[f.key] || ""}
             onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
@@ -337,7 +339,7 @@ function ContractEditForm({
           await onSave({
             contractNo: form.contractNo || null,
             contractType: form.contractType,
-            amount: form.amount ? Number(form.amount) : null,
+            amount: parseAmount(form.amount),
             currency: form.currency,
             status: form.status,
           });
@@ -392,7 +394,7 @@ function BookingEditForm({
           await onSave({
             bookingNo: form.bookingNo || null,
             vendorId: form.vendorId || null,
-            amount: form.amount ? Number(form.amount) : null,
+            amount: parseAmount(form.amount),
             currency: form.currency,
             orderDate: form.orderDate || null,
             status: form.status,
@@ -492,7 +494,13 @@ function Field({
   return (
     <div className="form-field">
       <label className="mb-1 block text-xs text-slate-500">{label}</label>
-      <Input type={type} value={value} onChange={(e) => onChange(e.target.value)} />
+      <Input
+        type={type}
+        step={type === "number" ? "0.01" : undefined}
+        inputMode={type === "number" ? "decimal" : undefined}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+      />
     </div>
   );
 }
