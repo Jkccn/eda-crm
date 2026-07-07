@@ -58,9 +58,9 @@ export function canViewCustomerContacts(user: SessionUser): boolean {
   return !isAssistant(user.role);
 }
 
-/** 助理仅可编辑客户基础信息（不可删客户、不可管商机） */
+/** 仅管理者与管理员可删除客户 */
 export function canDeleteCustomer(user: SessionUser): boolean {
-  return !isAssistant(user.role);
+  return isGlobalViewer(user.role);
 }
 
 export function canManageOpportunities(user: SessionUser): boolean {

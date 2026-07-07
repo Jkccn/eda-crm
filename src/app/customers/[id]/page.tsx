@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, FolderOpen } from "lucide-react";
 import { AddressesPanel } from "@/components/customers/addresses-panel";
 import { ContactsPanel } from "@/components/customers/contacts-panel";
+import { CustomerDeleteButton } from "@/components/customers/customer-delete-button";
 import { CustomerProfilePanel } from "@/components/customers/customer-profile-panel";
 import { OemRegistrationPanel } from "@/components/customers/oem-registration-panel";
 import { OpportunityForm } from "@/components/opportunities/opportunity-form";
@@ -12,6 +13,7 @@ import { prisma } from "@/lib/prisma";
 import { STAGE_COLORS } from "@/lib/constants";
 import {
   canAccessCustomer,
+  canDeleteCustomer,
   canManageOpportunities,
   canViewCustomerContacts,
   isEngineer,
@@ -62,13 +64,18 @@ export default async function CustomerDetailPage({ params }: Props) {
 
       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <CustomerProfilePanel initial={customer} />
-        {showOpportunities && (
-          <OpportunityForm
-            customerId={customer.id}
-            ownerName={customer.ownerName}
-            aeName={customer.aeName}
-          />
-        )}
+        <div className="flex shrink-0 flex-col items-stretch gap-3 sm:flex-row sm:items-start">
+          {canDeleteCustomer(user) && (
+            <CustomerDeleteButton customerId={customer.id} accountName={customer.accountName} />
+          )}
+          {showOpportunities && (
+            <OpportunityForm
+              customerId={customer.id}
+              ownerName={customer.ownerName}
+              aeName={customer.aeName}
+            />
+          )}
+        </div>
       </div>
 
       <Card>

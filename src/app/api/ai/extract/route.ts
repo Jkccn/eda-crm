@@ -3,11 +3,13 @@ import { OfficeParser } from "officeparser";
 import * as XLSX from "xlsx";
 import { requireApiAuth } from "@/lib/api-auth";
 import { getFileExtension } from "@/lib/document-preview";
+import { getAiSettings, getVisionSettings } from "@/lib/ai/config";
+import { extractScannedPdfWithVision, hasMeaningfulPdfText } from "@/lib/ai/pdf-ocr";
 import { extractPdfText } from "@/lib/ai/pdf-text";
 import { saveAiTempFile } from "@/lib/ai/temp-files";
 
 export const runtime = "nodejs";
-export const maxDuration = 60;
+export const maxDuration = 120;
 
 const MAX_FILE_BYTES = 15 * 1024 * 1024; // 15MB
 const MAX_IMAGE_BYTES = 6 * 1024 * 1024; // 6MB（base64 后约 8MB）
@@ -102,14 +104,25 @@ export async function POST(request: Request) {
       let rawText: string;
       if (ext === "pdf" || mime === "application/pdf") {
         rawText = await extractPdfText(buffer);
+        if (!hasMeaningfulPdfText(rawText)) {
+          const vision = getVisionSettings(await getAiSettings());
+          if (vision) {
+            rawText = await extractScannedPdfWithVision(buffer, vision);
+          }
+        }
       } else {
         const ast = await OfficeParser.parseOffice(buffer, { ocr: false });
         rawText = ast.toText();
       }
       const { text, truncated } = truncate(rawText);
       if (!text) {
+        const vision = getVisionSettings(await getAiSettings());
         return NextResponse.json(
-          { error: "未能从文件中提取到文字内容（可能是扫描件/纯图片 PDF），请尝试截图后粘贴图片" },
+          {
+            error: vision
+              ? "未能从文件中提取到文字内容（扫描件识别失败或页面为空白），请检查 PDF 是否清晰，或尝试截图后粘贴图片"
+              : "未能从文件中提取到文字内容（可能是扫描件/纯图片 PDF）。请在「信息配置 → AI 助手设置」中配置视觉模型，或截图后粘贴图片",
+          },
           { status: 400 },
         );
       }

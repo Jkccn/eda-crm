@@ -11,6 +11,25 @@ import {
 import { resolveCustomerOwners } from "@/lib/customer-owners";
 import { oemFieldsFromBody, stripUndefined } from "@/lib/customer-oem-fields";
 
+const PROFILE_FIELDS = [
+  "accountName",
+  "englishName",
+  "region",
+  "industry",
+  "description",
+  "notes",
+] as const;
+
+function profilePatchData(body: Record<string, unknown>) {
+  const data: Record<string, unknown> = {};
+  for (const key of PROFILE_FIELDS) {
+    if (body[key] !== undefined) {
+      data[key] = typeof body[key] === "string" && body[key] === "" ? null : body[key];
+    }
+  }
+  return data;
+}
+
 type Params = { params: Promise<{ id: string }> };
 
 export async function GET(_request: Request, { params }: Params) {
@@ -55,24 +74,51 @@ export async function PATCH(request: Request, { params }: Params) {
   if (!canAccessCustomer(user!, existing)) return apiForbidden();
 
   const body = await request.json();
-  const { ownerUserId, ownerName, aeName } = isAssistant(user!.role)
-    ? { ownerUserId: existing.ownerUserId, ownerName: existing.ownerName, aeName: existing.aeName }
-    : await resolveCustomerOwners(body, user!);
+  const importanceOnly =
+    typeof body.isImportant === "boolean" &&
+    PROFILE_FIELDS.every((key) => body[key] === undefined) &&
+    body.ownerUserId === undefined &&
+    body.aeUserId === undefined &&
+    body.oemOpportunityNo === undefined;
+
+  let ownerUserId = existing.ownerUserId;
+  let ownerName = existing.ownerName;
+  let aeName = existing.aeName;
+
+  if (!importanceOnly) {
+    const resolved = isAssistant(user!.role)
+      ? {
+          ownerUserId: existing.ownerUserId,
+          ownerName: existing.ownerName,
+          aeName: existing.aeName,
+        }
+      : await resolveCustomerOwners(body, user!);
+    ownerUserId = resolved.ownerUserId;
+    ownerName = resolved.ownerName;
+    aeName = resolved.aeName;
+  }
+
+  const data = stripUndefined({
+    ...profilePatchData(body),
+    ...(importanceOnly
+      ? {}
+      : {
+          ownerName,
+          aeName,
+          ownerUserId,
+          ...oemFieldsFromBody(body),
+        }),
+    ...(typeof body.isImportant === "boolean"
+      ? {
+          isImportant: body.isImportant,
+          importanceUpdatedAt: body.isImportant ? new Date() : null,
+        }
+      : {}),
+  });
 
   const customer = await prisma.customer.update({
     where: { id },
-    data: {
-      accountName: body.accountName,
-      englishName: body.englishName,
-      region: body.region,
-      industry: body.industry,
-      description: body.description,
-      ownerName,
-      aeName,
-      notes: body.notes,
-      ownerUserId,
-      ...stripUndefined(oemFieldsFromBody(body)),
-    },
+    data,
   });
   return NextResponse.json(customer);
 }

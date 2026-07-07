@@ -11,6 +11,7 @@ import {
 } from "@/lib/rbac";
 import { resolveCustomerOwners } from "@/lib/customer-owners";
 import { oemFieldsFromBody, stripUndefined } from "@/lib/customer-oem-fields";
+import { customerOrderBy, parseCustomerSort } from "@/lib/customer-sort";
 
 export async function GET(request: Request) {
   const { user, error } = await requireApiAuth();
@@ -36,7 +37,7 @@ export async function GET(request: Request) {
 
   const customers = await prisma.customer.findMany({
     where,
-    orderBy: { updatedAt: "desc" },
+    orderBy: customerOrderBy(parseCustomerSort(searchParams.get("sort"))),
     include: {
       _count: { select: { opportunities: true } },
       opportunities: {

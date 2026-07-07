@@ -36,6 +36,9 @@ model Customer {
   oemOpportunityName   String?
   oemRegisterStartAt   DateTime?
   oemRegisterExpiresAt DateTime?
+  /// 重要性标记（星标）
+  isImportant          Boolean           @default(false)
+  importanceUpdatedAt  DateTime?
   createdAt     DateTime          @default(now())
   updatedAt     DateTime          @updatedAt
   opportunities Opportunity[]
