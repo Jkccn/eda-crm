@@ -3,6 +3,7 @@ import { OfficeParser } from "officeparser";
 import * as XLSX from "xlsx";
 import { requireApiAuth } from "@/lib/api-auth";
 import { getFileExtension } from "@/lib/document-preview";
+import { extractPdfText } from "@/lib/ai/pdf-text";
 import { saveAiTempFile } from "@/lib/ai/temp-files";
 
 export const runtime = "nodejs";
@@ -98,8 +99,14 @@ export async function POST(request: Request) {
     }
 
     if (DOC_EXTENSIONS.has(ext) || mime === "application/pdf") {
-      const ast = await OfficeParser.parseOffice(buffer, { ocr: false });
-      const { text, truncated } = truncate(ast.toText());
+      let rawText: string;
+      if (ext === "pdf" || mime === "application/pdf") {
+        rawText = await extractPdfText(buffer);
+      } else {
+        const ast = await OfficeParser.parseOffice(buffer, { ocr: false });
+        rawText = ast.toText();
+      }
+      const { text, truncated } = truncate(rawText);
       if (!text) {
         return NextResponse.json(
           { error: "未能从文件中提取到文字内容（可能是扫描件/纯图片 PDF），请尝试截图后粘贴图片" },

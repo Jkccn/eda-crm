@@ -13,5 +13,10 @@ services:
     volumes:
       - ./data:/app/data
       - ./uploads:/app/uploads
+      - ./deploy/docker-resolv.conf:/etc/resolv.conf:ro
+    # 该机房封锁公共 DNS（223.5.5.5 等），且 Docker 内置 DNS(127.0.0.11) 不可用，直接挂载运营商 DNS
+    dns:
+      - 117.24.13.8
+      - 110.80.137.52
     restart: unless-stopped
     command: sh -c "mkdir -p data uploads && node scripts/pre-migrate-backup.mjs && npx prisma migrate deploy && npm start"

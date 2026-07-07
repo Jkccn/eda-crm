@@ -107,7 +107,13 @@ function AttachmentChip({
   );
 }
 
-export function AssistantChat({ configured }: { configured: boolean }) {
+export function AssistantChat({
+  configured,
+  visionConfigured = false,
+}: {
+  configured: boolean;
+  visionConfigured?: boolean;
+}) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -245,6 +251,9 @@ export function AssistantChat({ configured }: { configured: boolean }) {
               <p className="mt-1 max-w-md text-sm text-slate-400">
                 用自然语言查询客户、商机、财务数据，生成报告表格，或让我帮你录入和更新数据。
                 支持上传 PDF/Word/Excel/PPT 或粘贴图片，AI 会读取内容并帮你填写 CRM。
+                {visionConfigured
+                  ? " 图片由视觉模型识别后交给主模型处理。"
+                  : " 粘贴图片需管理员配置视觉模型。"}
               </p>
             </div>
             {!configured ? (
@@ -426,7 +435,8 @@ export function AssistantChat({ configured }: { configured: boolean }) {
         </div>
         <p className="mt-2 text-[11px] text-slate-500">
           AI 可查询你权限范围内的 CRM 数据；创建/修改数据前会先与你确认。支持上传
-          PDF、Word、Excel、PPT、文本及图片（图片需模型支持视觉）。回复内容仅供参考，请核实后使用。
+          PDF、Word、Excel、PPT、文本及图片
+          {visionConfigured ? "（图片由视觉模型识别）" : "（图片需配置视觉模型）"}。回复内容仅供参考，请核实后使用。
         </p>
       </div>
     </div>

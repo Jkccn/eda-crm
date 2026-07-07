@@ -21,7 +21,10 @@ export default async function AssistantPage() {
           自然语言查询 CRM 数据、生成报告表格、快速录入更新信息
         </p>
       </div>
-      <AssistantChat configured={Boolean(settings.apiKey)} />
+      <AssistantChat
+        configured={Boolean(settings.apiKey)}
+        visionConfigured={Boolean(settings.visionApiKey && settings.visionBaseUrl)}
+      />
     </div>
   );
 }

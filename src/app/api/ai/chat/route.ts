@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireApiAuth } from "@/lib/api-auth";
-import { getAiSettings } from "@/lib/ai/config";
+import { getAiSettings, getVisionSettings } from "@/lib/ai/config";
+import { recognizeImagesWithVision } from "@/lib/ai/vision";
 import { AI_TOOLS, executeAiTool } from "@/lib/ai/tools";
 import { ROLE_LABELS, type UserRole } from "@/lib/constants";
 
@@ -9,7 +10,6 @@ export const maxDuration = 120;
 
 const MAX_TOOL_ROUNDS = 8;
 const MAX_ATTACHMENT_TEXT = 30_000;
-const MAX_IMAGES_PER_REQUEST = 4;
 
 type ContentPart =
   | { type: "text"; text: string }
@@ -38,9 +38,8 @@ type ClientAttachment = {
 function buildUserContent(
   content: string,
   attachments: ClientAttachment[],
-): string | ContentPart[] {
-  let text = content;
-  const images: ContentPart[] = [];
+): string {
+  let text = content || "";
 
   for (const att of attachments) {
     const tokenNote =
@@ -48,18 +47,41 @@ function buildUserContent(
     if (att.kind === "text" && typeof att.text === "string") {
       const body = att.text.slice(0, MAX_ATTACHMENT_TEXT);
       text += `\n\n【附件文件：${att.name}】${tokenNote}${att.truncated ? "（内容过长，已截断）" : ""}\n${body}\n【附件结束】`;
-    } else if (att.kind === "image" && typeof att.dataUrl === "string" && att.dataUrl.startsWith("data:image/")) {
-      if (tokenNote) {
-        text += `\n\n【附件图片：${att.name}】${tokenNote}`;
-      }
-      if (images.length < MAX_IMAGES_PER_REQUEST) {
-        images.push({ type: "image_url", image_url: { url: att.dataUrl } });
-      }
+    } else if (att.kind === "image" && tokenNote) {
+      text += `\n\n【附件图片：${att.name}】${tokenNote}`;
     }
   }
 
-  if (images.length === 0) return text;
-  return [{ type: "text", text }, ...images];
+  return text.trim() || "请阅读附件内容。";
+}
+
+async function buildUserMessage(
+  content: string,
+  attachments: ClientAttachment[],
+  vision: ReturnType<typeof getVisionSettings>,
+): Promise<string> {
+  const images = attachments
+    .filter(
+      (a) =>
+        a.kind === "image" &&
+        typeof a.dataUrl === "string" &&
+        a.dataUrl.startsWith("data:image/"),
+    )
+    .map((a) => ({ name: a.name, dataUrl: a.dataUrl! }));
+
+  let text = buildUserContent(content, attachments);
+
+  if (images.length > 0) {
+    if (!vision) {
+      throw new Error(
+        "消息包含图片，但尚未配置视觉模型。请在「信息配置 → AI 助手设置」中填写视觉模型（如 Qwen3.7-Plus）的 API 地址和 Key。",
+      );
+    }
+    const visionText = await recognizeImagesWithVision(images, content, vision);
+    text += `\n\n【图片识别结果（${vision.model}）】\n${visionText}`;
+  }
+
+  return text;
 }
 
 function systemPrompt(displayName: string, role: string) {
@@ -69,7 +91,7 @@ function systemPrompt(displayName: string, role: string) {
 
 你可以通过工具查询和更新 CRM 数据（客户、销售机会、报价、合同、财务、License 等）。
 
-用户可能会上传附件（PDF/Word/Excel/PPT 会以「【附件文件：xxx】(fileToken: ...) …【附件结束】」的形式附在消息中，图片会直接作为图像输入）。处理附件时：
+用户可能会上传附件（PDF/Word/Excel/PPT 会以「【附件文件：xxx】(fileToken: ...) …【附件结束】」的形式附在消息中；图片会先由视觉模型识别为文字「【图片识别结果】…」再交给你处理）。处理附件时：
 - 仔细阅读附件内容，提取客户名称、产品、金额、币种、日期、联系人等关键信息。
 - 若用户希望把附件信息录入 CRM，先用查询工具确认相关客户/商机是否已存在（避免重复创建），然后向用户列出你计划写入的字段和值，得到确认后再调用写入工具。
 - 附件是报价单/合同/发票等文件时，主动建议用户把原文件归档到对应商机：确认后调用 attach_document（fileToken 取自附件标注，category 按文件类型选择，如报价单选 quote）。
@@ -96,6 +118,8 @@ export async function POST(request: Request) {
     );
   }
 
+  const vision = getVisionSettings(settings);
+
   const body = await request.json();
   const rawMessages: { role?: string; content?: unknown; attachments?: unknown }[] = Array.isArray(
     body.messages,
@@ -103,7 +127,7 @@ export async function POST(request: Request) {
     ? body.messages
     : [];
 
-  const clientMessages: ChatMessage[] = rawMessages
+  const parsed = rawMessages
     .filter(
       (m) => (m.role === "user" || m.role === "assistant") && typeof m.content === "string",
     )
@@ -114,26 +138,43 @@ export async function POST(request: Request) {
             (a) => a && (a.kind === "text" || a.kind === "image") && typeof a.name === "string",
           )
         : [];
-      if (m.role === "user" && attachments.length > 0) {
-        return { role: "user" as const, content: buildUserContent(m.content as string, attachments) };
-      }
-      return { role: m.role as "user" | "assistant", content: m.content as string };
+      return {
+        role: m.role as "user" | "assistant",
+        content: m.content as string,
+        attachments,
+      };
     });
 
-  if (clientMessages.length === 0 || clientMessages[clientMessages.length - 1].role !== "user") {
+  if (parsed.length === 0 || parsed[parsed.length - 1].role !== "user") {
     return NextResponse.json({ error: "缺少用户消息" }, { status: 400 });
   }
 
-  // DeepSeek 全系模型为纯文本接口，携带 image_url 会被直接拒绝，提前给出友好提示
-  const containsImages = clientMessages.some(
-    (m) => Array.isArray(m.content) && m.content.some((p) => p.type === "image_url"),
-  );
-  if (containsImages && /deepseek/i.test(settings.model)) {
+  let clientMessages: ChatMessage[];
+  try {
+    const lastIdx = parsed.length - 1;
+    clientMessages = await Promise.all(
+      parsed.map(async (m, idx) => {
+        if (m.role === "user" && m.attachments.length > 0) {
+          // 仅对当前轮次做视觉识别，历史图片信息已在上下文中
+          if (idx !== lastIdx) {
+            const textOnly = m.attachments.filter((a) => a.kind !== "image");
+            let content = buildUserContent(m.content, textOnly);
+            if (m.attachments.some((a) => a.kind === "image")) {
+              content += "\n\n（此消息曾包含图片附件）";
+            }
+            return { role: "user" as const, content };
+          }
+          return {
+            role: "user" as const,
+            content: await buildUserMessage(m.content, m.attachments, vision),
+          };
+        }
+        return { role: m.role, content: m.content };
+      }),
+    );
+  } catch (err) {
     return NextResponse.json(
-      {
-        error:
-          "当前配置的 DeepSeek 模型不支持图片识别。请移除图片附件（PDF/Word/Excel/PPT 文件不受影响），或让管理员在「信息配置 → AI 助手设置」中改用支持视觉的模型（如 GPT-4o、qwen-vl-max 等）。",
-      },
+      { error: err instanceof Error ? err.message : "附件处理失败" },
       { status: 400 },
     );
   }
@@ -164,15 +205,8 @@ export async function POST(request: Request) {
 
       if (!res.ok) {
         const detail = await res.text().catch(() => "");
-        const hasImages = messages.some(
-          (m) => Array.isArray(m.content) && m.content.some((p) => p.type === "image_url"),
-        );
-        const hint =
-          hasImages && res.status < 500
-            ? "（当前模型可能不支持图片识别。如需识别图片，请在「信息配置 → AI 助手设置」中改用视觉模型，如 GPT-4o、qwen-vl-max 等；PDF/Word/Excel 等文件不受影响）"
-            : "";
         return NextResponse.json(
-          { error: `AI 服务请求失败（${res.status}）：${detail.slice(0, 300)}${hint}` },
+          { error: `AI 服务请求失败（${res.status}）：${detail.slice(0, 300)}` },
           { status: 502 },
         );
       }

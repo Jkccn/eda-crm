@@ -1,6 +1,6 @@
 FROM docker.m.daocloud.io/library/node:20-alpine
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
-  && apk add --no-cache python3 make g++ libc6-compat
+  && apk add --no-cache python3 make g++ libc6-compat poppler-utils
 WORKDIR /app
 
 COPY package.json package-lock.json ./
